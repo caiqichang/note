@@ -1,0 +1,49 @@
+# Spring Cloud Gateway
+
+## 1. 代理路由
+基于代码配置
+```java
+@Bean
+public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
+    return routeLocatorBuilder
+            .routes()
+
+            // route api1
+            .route("API1_NAME", route -> route
+                    .path("/api1/**")
+                    .filters(GatewayFilterSpec::preserveHostHeader)
+                    .uri("http://localhost:8081/"))
+
+            // route api2
+            .route("API2_NAME", route -> route
+                    .path("/api2/**")
+                    .filters(GatewayFilterSpec::preserveHostHeader)
+                    .uri("http://localhost:8082/"))
+
+            .build();
+}
+```
+
+基于配置文件配置
+```yaml
+spring:
+  cloud:
+    gateway:
+      routes:
+
+        # route api1
+        - id: API1_NAME
+          predicates:
+            - Path=/api1/**
+          filters:
+            - PreserveHostHeader
+          uri: http://localhost:8081/
+
+        # route api2
+        - id: API2_NAME
+          predicates:
+            - Path=/api2/**
+          filters:
+            - PreserveHostHeader
+          uri: http://localhost:8082/
+```

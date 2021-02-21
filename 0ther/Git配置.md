@@ -20,7 +20,7 @@
 
 - 禁用 Git Credential Manager
   - git config --edit --system
-  - 删除 helper = manager 行
+  - 删除 helper = 行
 
 - 直接在命令行输入用户名和密码，不使用弹窗方式
   - 配置文件增加 [core] askpass =

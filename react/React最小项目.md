@@ -55,7 +55,6 @@ package-lock.json
 
 # project
 build
-.eslintcache
 ```
 
 ### .env
@@ -189,7 +188,6 @@ ReactDOM.render(
 ```javascript
 const {createProxyMiddleware} = require('http-proxy-middleware');
 
-// eslint-disable-next-line import/no-anonymous-default-export
 module.exports = app => {
     
 }

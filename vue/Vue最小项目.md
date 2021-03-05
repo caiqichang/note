@@ -49,10 +49,10 @@ package-lock.json
 
 # jetbrains
 .idea
-.iml
+*.iml
 
 # project
-dist
+/dist
 ```
 
 ### .env和.env.[mode]

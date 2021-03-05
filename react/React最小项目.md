@@ -51,10 +51,10 @@ package-lock.json
 
 # jetbrains
 .idea
-.iml
+*.iml
 
 # project
-build
+/build
 ```
 
 ### .env

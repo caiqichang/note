@@ -30,13 +30,34 @@ src
 |- App.vue
 |- main.js
 .env
-.env.[mode]
+.env.prod
 .gitignore
 package.json 
 vue.config.js
 ```
 
 ## 主要文件
+
+### package.json
+```json
+{
+  "name": "",
+  "version": "1.0.0",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build:prod": "vue-cli-service build --mode prod"
+  },
+  "dependencies": {
+    "vue": "",
+    "vue-router": "",
+    "vuex": ""
+  },
+  "devDependencies": {
+    "@vue/cli-service": "",
+    "vue-template-compiler": ""
+  }
+}
+```
 
 ### .gitignore
 ```ini
@@ -55,7 +76,7 @@ package-lock.json
 /dist
 ```
 
-### .env和.env.[mode]
+### .env和.env.prod
 ```ini
 VUE_APP_PUBLIC_PATH=
 ```

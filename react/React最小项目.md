@@ -33,12 +33,33 @@ src
 |- index.js
 |- setupProxy.js
 .env
-.env.[mode]
+.env.prod
 .gitignore
 package.json 
 ```
 
 ## 主要文件
+
+### package.json
+```json
+{
+  "name": "",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build:prod": "env-cmd -f .env.prod react-scripts build"
+  },
+  "browserslist": [],
+  "dependencies": {
+    "env-cmd": "",
+    "http-proxy-middleware": "",
+    "react": "",
+    "react-dom": "",
+    "react-router-dom": "",
+    "react-scripts": ""
+  }
+}
+```
 
 ### .gitignore
 ```ini
@@ -65,7 +86,7 @@ GENERATE_SOURCEMAP=false
 BROWSER=none
 ```
 
-### .env.[mode]
+### .env.prod
 ```ini
 PUBLIC_URL=
 ```

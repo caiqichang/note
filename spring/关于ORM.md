@@ -83,7 +83,6 @@ mybatis:
   configuration:
     # 映射驼峰式命名
     map-underscore-to-camel-case: true
-  type-aliases-package: mapper包的全限定名
 ```
 
 ## <span id="jdbcTemplate">JdbcTemplate</span>

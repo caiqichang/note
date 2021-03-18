@@ -67,7 +67,7 @@ http://{SERVER_IP}:{PORT}{WEBSERVER_CONTEXT_PATH}{WEBSERVICE_INTERFACE_URL}?wsdl
 ```
 
 ### 6. Soap请求报文格式
-```http
+```xml
 POST http://{SERVER_IP}:{PORT}/{URL}?wsdl
 Content-Type: text/xml; charset=utf-8
 
@@ -84,7 +84,7 @@ Content-Type: text/xml; charset=utf-8
 ###
 ```
 通常响应格式
-```http
+```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
         <ns2:RESPONSE_TYPE xmlns:ns2="TARGET_NAMESPACE OR TNS">

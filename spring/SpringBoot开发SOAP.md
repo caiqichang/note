@@ -20,7 +20,7 @@
 public class WebServiceConfig {
     // bean名称必需为cxfServlet
     @Bean("cxfServlet")
-    public ServletRegistrationBean<CXFServlet> servletServletRegistrationBean() {
+    public ServletRegistrationBean<CXFServlet> servletRegistrationBean() {
         // 通常webservice的context-path不要设置为 /* ，避免覆盖DispatcherServlet
         return new ServletRegistrationBean<>(new CXFServlet(), WEBSERVER_CONTEXT_PATH + "/*");
     }

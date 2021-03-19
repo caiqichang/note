@@ -7,11 +7,6 @@
     <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
     <version></version>
 </dependency>
-<dependency>
-    <groupId>org.hibernate</groupId>
-    <artifactId>hibernate-validator</artifactId>
-    <version></version>
-</dependency>
 ```
 
 ## 2. 配置类
@@ -22,7 +17,7 @@ public class WebServiceConfig {
     @Bean("cxfServlet")
     public ServletRegistrationBean<CXFServlet> servletRegistrationBean() {
         // 通常webservice的context-path不要设置为 /* ，避免覆盖DispatcherServlet
-        return new ServletRegistrationBean<>(new CXFServlet(), WEBSERVER_CONTEXT_PATH + "/*");
+        return new ServletRegistrationBean<>(new CXFServlet(), WEBSERVER_PATH + "/*");
     }
 
     // 用于发布webservice端点
@@ -51,11 +46,11 @@ public class WEBSERVICE_INTERFACE {
 public class WebServiceEndpoint {
     // 发布多个webservice接口需要配置多个bean
     @Bean
-    public Endpoint WEBSERVICE_INTERFACE_ENDPOINT(SpringBus springBus, WEBSERVICE_INTERFACE wi) {
+    public Endpoint INTERFACE_ENDPOINT(SpringBus springBus, WEBSERVICE_INTERFACE wi) {
         // 通常将webservice接口的bean通过参数注入
         EndpointImpl endpoint = new EndpointImpl(springBus, wi);
         // 访问该接口的URL
-        endpoint.publish(WEBSERVICE_INTERFACE_URL);
+        endpoint.publish(INTERFACE_URL);
         return endpoint;
     }
 }
@@ -63,13 +58,13 @@ public class WebServiceEndpoint {
 
 ## 5. 接口地址
 ```
-http://{SERVER_IP}:{PORT}{WEBSERVER_CONTEXT_PATH}{WEBSERVICE_INTERFACE_URL}?wsdl
+GET http://{IP}:{PORT}{CONTENT_PATH}{WEBSERVER_PATH}{INTERFACE_URL}?wsdl
 ```
 
 ### 6. Soap请求报文格式
 ```xml
-POST http://{SERVER_IP}:{PORT}/{URL}?wsdl
-Content-Type: text/xml; charset=utf-8
+POST http://{IP}:{PORT}{CONTENT_PATH}{WEBSERVER_PATH}{INTERFACE_URL}?wsdl
+Content-Type: text/xml; charset=UTF-8
 
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>

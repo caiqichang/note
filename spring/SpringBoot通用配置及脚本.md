@@ -14,9 +14,6 @@ spring:
   main:
     # 关闭banner
     banner-mode: off
-  # pid文件位置，需要在启动类中启用
-  pid:
-    file: ./log/spring.pid
   # json默认时间日期格式和时区，模板（thymeleaf）中无效
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -28,9 +25,6 @@ spring:
       # 单次请求大小，设置为-1则不限制，默认10MB
       max-request-size: -1
 logging:
-  # 日志文件位置
-  file:
-    name: ./log/spring.log
   level:
     org:
       springframework:
@@ -60,6 +54,13 @@ spring:
     password: AES[加密后的密文]
     # 数据库连接url，mysql连接需要设置时区参数
     url: jdbc:mysql://localhost:3306/databaseName?serverTimezone=GMT%2B8
+  # pid文件位置，需要在启动类中启用
+  pid:
+    file: ./log/config.pid
+logging:
+  # 日志文件位置
+  file:
+    name: ./log/config.log
 ```
 
 <br/>

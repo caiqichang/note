@@ -16,6 +16,7 @@ mybatis:
 
 <configuration>
     <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 </configuration>

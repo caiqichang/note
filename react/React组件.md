@@ -43,7 +43,7 @@ class ClassComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = initState
-    };
+    }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state !== prevState) {
@@ -63,7 +63,7 @@ class ClassComponent extends React.Component {
         return (
             <div className={'ClassComponent'}></div>
         );
-    };
+    }
 }
 
 ClassComponent.defaultProps = {};

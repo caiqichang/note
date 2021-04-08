@@ -1,14 +1,14 @@
-# Gradle 配置
+# Gradlle Global Configuration
 
-- 环境变量 `GRADLE_USER_HOME`
+- Environment Variable: GRADLE_USER_HOME
 
-- 全局脚本 `init.gradle`
-1. 阿里云仓库
-```groovy 
+- `init.gradle` under environment variable 
+1. Third Part Repository
+```groovy
 allprojects {
   repositories {
     maven {
-      url 'https://maven.aliyun.com/repository/public/'
+      url 'Repository Address'
     }
     mavenLocal()
     mavenCentral()
@@ -16,12 +16,12 @@ allprojects {
 }
 ```
 
-- 属性 `gradle.properties` 环境变量中的优先于项目中的
-1. UTF-8编码
+- `gradle.properties` under environment variable (has priority to Project)
+1. Encoding
 ```properties
 org.gradle.jvmargs=-Dfile.encoding=UTF-8
 ```
-2. 代理
+2. Proxy
 ```properties
 systemProp.http.proxyHost=127.0.0.1
 systemProp.http.proxyPort=1080

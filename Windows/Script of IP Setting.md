@@ -1,8 +1,9 @@
-# IP配置脚本
+# Script of IP Setting
 
-## 静态IP
+> Must run as administrator and encode as GBK.
+
+## set static ip
 ```bat
-rem encoding=GBK, run as administrator
 netsh interface ip ^
 set address name="以太网" ^
 source=static ^
@@ -16,9 +17,8 @@ addr=202.96.128.166
 pause
 ```
 
-## 动态IP
+## set dynamic ip
 ```bat
-rem encoding=GBK, run as administrator
 netsh interface ip ^
 set address name="以太网" ^
 source=dhcp

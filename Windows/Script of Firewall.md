@@ -1,16 +1,16 @@
-# 防火墙脚本
+# Script of Firewall
 
-## 关
+> Must run as administrator.
+
+## set off 
 ```bat
-rem encoding=GBK, run as administrator
 netsh advfirewall ^
 set allprofiles state off
 pause
 ```
 
-## 开
+## set on
 ```bat
-rem encoding=GBK, run as administrator
 netsh advfirewall ^
 set allprofiles state on
 pause

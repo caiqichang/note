@@ -1,6 +1,8 @@
-# MySQL配置
+# MySQL Config 
 
-文件 my.ini
+> todo
+
+## my.ini
 ```ini
 [mysqld]
 datadir=D:\mysql_data

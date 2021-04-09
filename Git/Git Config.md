@@ -1,4 +1,4 @@
-# Git Configuration
+# Git Config
 
 Location: %USERNAME%/.gitconfig
 

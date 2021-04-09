@@ -5,4 +5,4 @@ GET
 https://open.weixin.qq.com/qr/code?username=
 ```
 - Parameter:
-  - username: WEChat ID of Official Account
+  - username: WeChat ID of Official Account

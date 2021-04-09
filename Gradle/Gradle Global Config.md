@@ -1,4 +1,4 @@
-# Gradlle Global Configuration
+# Gradlle Global Config
 
 - Environment Variable: GRADLE_USER_HOME
 

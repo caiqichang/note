@@ -1,28 +1,28 @@
-# Mybatis XML 配置文件
+# Mybatis XML Config
 
-## Spring Boot 配置
+## Spring Boot Config
+1. Without other item of Mybatis config, 
+it means that only one of `XML Config` or `Java Config` could exist. 
+2. This file is relative to `resources`.
 ```yaml
-# 指定配置文件位置(以resource为根目录)
-# 注意：不能有其他Mybatis配置，代码配置和XML配置只能有一种
 mybatis:
   config-location: classpath:mybatis/MybatisConfig.xml
 ```
 
-## Config XML 配置
-> 注意：配置的mapper文件也是以resource为根目录
+## MybatisConfig.xml
+1. Mapper file path config in this is relative to `resource`.
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
     <settings>
-        <setting name="logImpl" value="STDOUT_LOGGING"/>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 </configuration>
 ```
 
-## Mapper MXL 配置
+## Mapper File
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">

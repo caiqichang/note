@@ -1,8 +1,8 @@
-# Swing 配置全局样式和字体
+# Global Style and Font of Swing
 
 ## 1. LookAndFeel
+- THEME: Metal, Nimbus, CDE/Motif, Windows, Windows Classic ...
 ```java
-// THEME -- Metal, Nimbus, CDE/Motif, Windows, Windows Classic 
 UIManager.LookAndFeelInfo[] themes = UIManager.getInstalledLookAndFeels();
 for (UIManager.LookAndFeelInfo t : themes) {
     if (t.getName().equals(THEME)) { 
@@ -17,11 +17,11 @@ for (UIManager.LookAndFeelInfo t : themes) {
 ```
 
 ## 2. Font
+- FONT_FAMILY: e.g. Microsoft YaHei
+- FONT_STYLE: Font.PLAIN 0, Font.BOLD 1, Font.ITALIC 2, Font.BOLD | Font.ITALIC 3
+- FONT_SIZE: e.g. 16
 ```java
-// FONT_STYLE -- e.g. Microsoft YaHei
-// FONT_STYLE -- e.g. Font.PLAIN 0, Font.BOLD 1, Font.ITALIC 2, Font.BOLD | Font.ITALIC 3
-// FONT_SIZE  -- e.g. 16
-FontUIResource fontUIResource = new FontUIResource(new Font(FONT_STYLE, FONT_STYLE, FONT_SIZE));
+FontUIResource fontUIResource = new FontUIResource(new Font(FONT_FAMILY, FONT_STYLE, FONT_SIZE));
 Enumeration<Object> keyIter = UIManager.getDefaults().keys();
 while (keyIter.hasMoreElements()) {
     Object key = keyIter.nextElement();

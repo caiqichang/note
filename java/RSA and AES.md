@@ -1,18 +1,18 @@
-# RSA + AES
+# RSA and AES
 
-## 1. RSA非对称加密
-公钥加密私钥解密，私钥加密公钥解密 <br/>
-私钥自身保存，公钥公开 <br/>
-加密内容的长度只能是128字节 <br/>
+## 1. RSA
+- Public key (PK) encrypt and private key (SK) decrypt, or private key encrypt and public key decrypt.
+- Private key for self only and public key for others.
+- Length of encryptive content is 128, so RSA always used for AES key.
 ```plantuml
 @startuml
 skinparam Monochrome reverse
-A -> B : A用B的公钥加密消息，B用自身的私钥解密消息
-A <- B : B用A的公钥加密消息，A用自身的私钥解密消息
+A -> B : A uses B's PK encrypt message, B uses its SK to decrypt
+A <- B : B uses A's PK encrypt message, A uses its SK to decrypt
 @enduml
 ```
 
-生成公钥、私钥
+- Generate Public Key and Private Key
 ```java
 KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 keyPairGenerator.initialize(1024);
@@ -21,72 +21,71 @@ PublicKey publicKey = keyPair.getPublic();
 PrivateKey privateKey = keyPair.getPrivate();
 ```
 
-加密、解密
+- Encrypt and Decrypt
 ```java
-// 公钥加密
+// Public Key Encrypt
 Cipher cipher = Cipher.getInstance("RSA");
 cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 cipher.doFinal(content);
-// 私钥解密
+// Private Key Decrypt
 Cipher cipher = Cipher.getInstance("RSA");
 cipher.init(Cipher.DECRYPT_MODE, privateKey);
 cipher.doFinal(code);
 
-// 私钥加密
+// Private Key Encrypt
 Cipher cipher = Cipher.getInstance("RSA");
 cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 cipher.doFinal(content);
-// 公钥解密
+// Public Key Decrypt
 Cipher cipher = Cipher.getInstance("RSA");
 cipher.init(Cipher.DECRYPT_MODE, publicKey);
 cipher.doFinal(code);
 ```
-
-密钥与byte[]相互转换，便于储存
+trans key to byte[] (take easy to storing)
 ```java 
-// 转换为byte[]
+// trans to byte[]
 byte[] pk = publicKey.getEncoded();
 byte[] sk = privateKey.getEncoded();
 
-// 从byte[]还原
+// retrans form byte[]
 PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(pk));
 PrivateKey privateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(sk));
 ```
 
-## 2. AES加密
-可以生成128、192、256字节长度的密钥
+## 2. AES
+- length of key cloud be: 128, 192, 256
 
-随机生成AES密钥
+- Generate random AES key
 ```java
 KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 keyGenerator.init(128, new SecureRandom());
 SecretKey secretKey = keyGenerator.generateKey();
 ```
 
-使用PBE算法根据密码和盐生成固定的密钥
+- Use PBE to generate state aes key according to password and salt.
 ```java
 SecretKey secretKey = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(
         new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 1000, 128)
 );
 ```
 
-加密、解密 <br/>
-iv参数：cipher.init()方法的第三个参数，防止相同内容每次加密后结果相同（理论上应该设置为随机值） <br/>
-ECB模式下不需要此参数。 <br/>
-CBC模式下加密解密需要使用相同的iv参数，可以通过cipher.getIV()获得。 <br/>
+- Encrypt and Decrypt
+  - iv: third param of cipher.init(), prevent that same content are encrypted to same result, always set to random.
+  - ECB Mode do not need iv.
+  - CBC Mode need same iv when encrypting and decrypting, available to get iv from cipher.getIV().
 ```java
-// 加密
+// encrypt
 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 cipher.init(Cipher.ENCRYPT_MODE, aesKey);
 cipher.doFinal(content);
 
-// 解密
+// decrypt
 Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 cipher.init(Cipher.DECRYPT_MODE, aesKey);
 cipher.doFinal(content);
 ```
 
-## 3. 通用工具类
+## 3. Util of AES and RSA Crypt
 ```java
 public class CryptUtil {
 
@@ -95,9 +94,7 @@ public class CryptUtil {
     private static final String AES_MODE_PADDING = "AES/ECB/PKCS5Padding";
 
     /**
-     * 随机生成AES密钥
-     *
-     * @return 密钥
+     * generate random aes key
      */
     public static String generateAesKey() {
         try {
@@ -111,11 +108,7 @@ public class CryptUtil {
     }
 
     /**
-     * 根据密码和盐生成固定的AES密钥
-     *
-     * @param password 密码
-     * @param salt     盐
-     * @return 密钥
+     * generate stable aes key base on salt
      */
     public static String generateAesKey(String password, String salt) {
         try {
@@ -129,13 +122,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * AES加密
-     *
-     * @param source 加密内容
-     * @param aesKey 密钥
-     * @return 密文
-     */
     public static String encryptByAes(String source, String aesKey) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
@@ -147,13 +133,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * AES解密
-     *
-     * @param base64 base64密文
-     * @param aesKey 密钥
-     * @return base64解密结果
-     */
     public static String decryptByAes(String base64, String aesKey) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
@@ -165,11 +144,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * 生成RSA密钥对
-     *
-     * @return 密钥对
-     */
     public static KeyPair generateRsaKeyPair() {
         try {
             KeyPairGenerator rsa = KeyPairGenerator.getInstance(RSA);
@@ -181,13 +155,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * RSA公钥加密
-     *
-     * @param source    加密内容
-     * @param publicKey 公钥
-     * @return base64加密结果
-     */
     public static String encryptByRsaPublishKey(byte[] source, PublicKey publicKey) {
         try {
             Cipher cipher = Cipher.getInstance(RSA);
@@ -199,13 +166,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * RSA私钥解密
-     *
-     * @param base64     base64
-     * @param privateKey 私钥
-     * @return 解密内容
-     */
     public static byte[] decryptByRsaPrivateKey(String base64, PrivateKey privateKey) {
         try {
             Cipher cipher = Cipher.getInstance(RSA);
@@ -217,24 +177,10 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * 将密钥转换为base64字符串
-     *
-     * @param key 密钥
-     * @return base64字符串
-     */
     public static String encodeKeyToBase64(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
-    /**
-     * 写密钥文件
-     *
-     * @param key      密钥
-     * @param filePath 文件路径
-     * @param title    标题
-     * @throws IOException
-     */
     public static void writeKeyFile(Key key, String filePath, String title) throws IOException {
         File file = new File(filePath);
         if (!file.exists() || !file.isFile()) file.createNewFile();
@@ -256,16 +202,9 @@ public class CryptUtil {
         }
     }
 
-    // 密钥文件的起始行与结束行
+    // pattern of key file start and end
     private static final Pattern pattern = Pattern.compile("^-----(BEGIN|END)\\s(.*)-----$");
 
-    /**
-     * 从文件读取密钥
-     *
-     * @param filePath 文件路径
-     * @return base64密钥
-     * @throws IOException
-     */
     public static String readKeyFromFile(String filePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             StringBuilder builder = new StringBuilder();
@@ -277,12 +216,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * 从base64字符串还原公钥
-     *
-     * @param base64 base64字符串
-     * @return 公钥
-     */
     public static PublicKey decodeRsaPublicKeyFromBase64(String base64) {
         try {
             return KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
@@ -292,12 +225,6 @@ public class CryptUtil {
         }
     }
 
-    /**
-     * 从base64字符串还原私钥
-     *
-     * @param base64 base64字符串
-     * @return 私钥
-     */
     public static PrivateKey decodeRsaPrivateKeyFromBase64(String base64) {
         try {
             return KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64)));

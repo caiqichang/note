@@ -3,9 +3,8 @@
 > Daily Note
 
 ## todo
-java
-javascript
-spring
-react
-vue
-maven
+- javascript
+- spring
+- react
+- vue
+- maven

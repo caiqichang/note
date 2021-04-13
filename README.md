@@ -7,4 +7,3 @@
 - spring
 - react
 - vue
-- maven

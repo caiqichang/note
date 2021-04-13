@@ -1,5 +1,6 @@
-# Chrome DevTool Emulated Devices
+# DevTool Emulated Devices setting
 
+- Get Data
 ```javascript
 window.alert(JSON.stringify({
     width: window.innerWidth,

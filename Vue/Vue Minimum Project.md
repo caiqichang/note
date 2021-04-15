@@ -1,42 +1,34 @@
-# Vue最小项目
+# Vue Minimum Project
 
-## 依赖
-- dependency
-  - vue
-  - vue-router
-  - vuex
-- devDependency
-  - @vue/cli-service
-  - vue-template-compiler
+## Dependency
+- vue
+- vue-router
+- vuex
 
-## 脚本
-- vue-cli-service service
-- vue-cli-service build
-> 指定环境变量 vue-cli-service build --mode [mode]
+## DevDependency
+- @vue/cli-service
+- vue-template-compiler
 
-## 项目结构
+## Project Content
 ```
-public
-|- favicon.ico
-|- index.html
-src
-|- assert
-|- component
-|- router
-   |- index.js
-|- store
-   |- index.js
-|- view
-|- App.vue
-|- main.js
-.env
-.env.prod
-.gitignore
-package.json 
-vue.config.js
++-- public
+| `-- favicon.ico
+| `-- index.html
++-- src
+| +-- router
+| | `-- index.js
+| +-- store
+| | `-- index.js
+| `-- App.vue
+| `-- main.js
+`-- .env
+`-- .env.prod
+`-- .gitignore
+`-- package.json 
+`-- vue.config.js
 ```
 
-## 主要文件
+## File Content
 
 ### package.json
 ```json
@@ -76,7 +68,7 @@ package-lock.json
 /dist
 ```
 
-### .env和.env.prod
+### .env and .env.prod
 ```ini
 VUE_APP_PUBLIC_PATH=
 ```

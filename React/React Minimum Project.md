@@ -1,46 +1,36 @@
-# React最小项目
+# React Minimum Project
 
-> `package.json`必须有`browserslist`，值可以为`[]` 
+## Dependency
+- env-cmd
+- http-proxy-middleware
+- react
+- react-dom
+- react-router-dom
+- react-scripts
+- recoil
 
-## 依赖
-- dependency
-  - env-cmd
-  - http-proxy-middleware
-  - react
-  - react-dom
-  - react-router-dom
-  - react-scripts
-
-## 脚本
-- react-scripts start
-- react-scripts build
-> 指定环境变量 env-cmd -f .env.[mode] react-scripts build
-
-## 项目结构
+## Project Structure
 ```
-public
-|- favicon.ico
-|- index.html
-src
-|- assert
-|- component
-|- router
-   |- Router.js
-|- store
-   |- Store.js
-|- view
-|- App.js
-|- index.js
-|- setupProxy.js
-.env
-.env.prod
-.gitignore
-package.json 
++-- public
+| `-- favicon.ico
+| `-- index.html
++-- src
+| +-- router
+| | `-- Router.js
+| +-- store
+| `-- App.js
+| `-- index.js
+| `-- setupProxy.js
+`-- .env
+`-- .env.prod
+`-- .gitignore
+`-- package.json 
 ```
 
-## 主要文件
+## File Content
 
 ### package.json
+- attention: `browserslist` is required, value cloud be `[]`
 ```json
 {
   "name": "",
@@ -56,7 +46,8 @@ package.json
     "react": "",
     "react-dom": "",
     "react-router-dom": "",
-    "react-scripts": ""
+    "react-scripts": "",
+    "recoil": ""
   }
 }
 ```
@@ -141,37 +132,6 @@ export default Router;
 
 ```
 
-### src/store/Store.js
-```javascript
-function Store(react) {
-    this.action.state = () => {
-        return {...state};
-    };
-    this.action.publish = (newState) => {
-        state = {...state, ...newState};
-        subscribe.forEach(s => s(state));
-    };
-
-    let state = this.state;
-    let action = this.action;
-
-    let subscribe = [];
-
-    return () => {
-        const [, newSubscribe] = react.useState();
-        react.useEffect(() => {
-            subscribe.push(newSubscribe);
-            return () => {
-                subscribe = subscribe.filter(s => s !== newSubscribe);
-            };
-        }, [state]);
-        return {state, action};
-    };
-}
-
-export default Store;
-```
-
 ### src/App.js
 ```javascript
 import Router from "./router/Router.js";
@@ -199,7 +159,9 @@ import App from './App.js';
 
 ReactDOM.render(
     <React.Fragment>
-        <App/>
+       <RecoilRoot>
+            <App/>
+        </RecoilRoot>
     </React.Fragment>
     , document.getElementById('app')
 );

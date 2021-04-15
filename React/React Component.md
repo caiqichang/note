@@ -4,7 +4,7 @@
 ```javascript
 import {useState, useRef, useEffect} from 'react';
 
-function FunctionComponent(props) {
+function ${NAME}(props) {
     const [state, setState] = useState(initState);
     const stateRef = useRef(state);
 
@@ -17,7 +17,6 @@ function FunctionComponent(props) {
 
         };
     }, [state]);
-
     useEffect(() => {
         // mounted
         return () => {
@@ -26,20 +25,20 @@ function FunctionComponent(props) {
     }, []);
 
     return (
-        <div className={'FunctionComponent'}></div>
+        <div></div>
     );
 }
 
-FunctionComponent.defaultProps = {};
+${NAME}.defaultProps = {};
 
-export default FunctionComponent;
+export default ${NAME};
 ```
 
 ## Class Component
 ```javascript
 import React from 'react';
 
-class ClassComponent extends React.Component {
+class ${NAME} extends React.Component {
     constructor(props) {
         super(props);
         this.state = initState
@@ -61,12 +60,12 @@ class ClassComponent extends React.Component {
 
     render() {
         return (
-            <div className={'ClassComponent'}></div>
+            <div></div>
         );
     }
 }
 
-ClassComponent.defaultProps = {};
+${NAME}.defaultProps = {};
 
-export default ClassComponent;
+export default ${NAME};
 ```

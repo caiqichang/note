@@ -1,6 +1,6 @@
-# 生成缩略图（内存）接口
+# Generate Thumbnail Image in Memory
 
-## 1. 依赖
+1. Dependency
 ```xml
 <dependency>
     <groupId>net.coobird</groupId>
@@ -9,7 +9,7 @@
 </dependency>
 ```
 
-## 2. 接口
+2. Interface
 ```java
 @GetMapping("/thumb")
 public ResponseEntity<byte[]> thumbnail(HttpServletRequest request) {
@@ -17,10 +17,10 @@ public ResponseEntity<byte[]> thumbnail(HttpServletRequest request) {
     // ...
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    // 压缩为 WIDTH*HEIGHT，遵循原图比例
+    // Compress to size WIDTH * HEIGHT, according to original scale (depend on longest side).
     Thumbnails.of(FILE_INSTANCE).size(WIDTH, HEIGHT).toOutputStream(outputStream);
 
-    // 处理文件名
+    // deal with file name
     String userAgent = Optional.ofNullable(request.getHeader("User-Agent")).orElse("");
     if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
         // IE

@@ -1,11 +1,11 @@
-# SpringBoot配置预处理
+# Preprocess Properties
 
-## 1. 文件 src/resources/META-INF/spring-factories
+1. Setup processor in `src/resources/META-INF/spring.factories`.
 ```ini
-org.springframework.boot.env.EnvironmentPostProcessor=预处理类的全限定名称
+org.springframework.boot.env.EnvironmentPostProcessor=CLASS_NAME_OF_PROCESSOR
 ```
 
-## 2. 预处理类需要实现以下接口
+2. Implement `EnvironmentPostProcessor`.
 ```java
 package org.springframework.boot.env;
 @FunctionalInterface
@@ -14,21 +14,21 @@ public interface EnvironmentPostProcessor {
 }
 ```
 
-## 3. 对配置文件的配置项做预处理
+3. Read and deal with properties in method `postProcessEnvironment`.
 ```java
 Map<String, Object> newProperty = new HashMap<>();
 environment.getPropertySources().forEach(i -> {
-    // i为每个配置文件
+    // i is each properties file.
     if (i instanceof MapPropertySource) {
         Map<String, Object> map = ((MapPropertySource) i).getSource();
         map.forEach((k, v) -> {
-            // k,v为配置文件中每个配置的键和值
-            // 该map为Collections$UnmodifiableMap，不可修改
-            // 先将配置处理后放到newProperty，再覆盖配置
+            // k, v are key and value of each property.
+            // map is Collections$UnmodifiableMap,
+            // so to process properties in a new map first, then create a new property source and override the old
         });
     }
 });
-// 覆盖配置
+// Override, attention to use addFirst().
 environment.getPropertySources().addFirst(new MapPropertySource(name, newProperty));
 
 ```

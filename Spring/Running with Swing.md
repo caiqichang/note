@@ -1,7 +1,6 @@
-# Spring Boot 运行Swing
+# Running with Swing
 
-headless 为是否不实例化 AWT，默认为true，即不实例化
-
+- `headless` means do not instantiate `AWT`, default is true, set false to enable `Swing`.
 ```java
 SpringApplicationBuilder builder = new SpringApplicationBuilder(APPLICATION.class);
 builder.headless(false).run(args);

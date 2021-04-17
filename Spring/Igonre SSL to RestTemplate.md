@@ -1,6 +1,8 @@
-# RestTemplate忽略SSL证书检查 -- 基于Apache HttpClient
+# Igonre SSL to RestTemplate
 
-* 依赖
+- Based on `Apache HttpClient`.
+
+- Dependency
 ```xml
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
@@ -14,23 +16,21 @@
 </dependency>
 ```
 
-* 代码
+- Code
 ```java
 /**
- * 忽略SSL证书检查的RestTemplate
- *
- * @return 抛出异常则返回null
+ * Generate RestTemplate instance that ignore SSL.
  */
 public RestTemplate ignoreSslRestTemplate() {
     try {
         return new RestTemplate(new HttpComponentsClientHttpRequestFactory(
                 HttpClients.custom().setSSLSocketFactory(new SSLConnectionSocketFactory(
                         new SSLContextBuilder()
-                                // 第一个参数为SSL证书
-                                // 第二个参数为信任策略，返回true以信任所有证书
+                                // Parameter 1 is certification of SSL.
+                                // Parameter 2 is trust strategy of SSL, return to trust all.
                                 .loadTrustMaterial(null, (chain, authType) -> true)
                                 .build(), 
-                        // 关闭域名验证
+                        // Close domain verifition.
                         NoopHostnameVerifier.INSTANCE
                 )).build()
         ));

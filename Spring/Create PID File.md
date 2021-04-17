@@ -1,13 +1,13 @@
-# SpringBoot生成pid文件
+# Create PID File
 
-## 1. 启动类增加PidWriter监听器
+1. Using `PidWriter` to Spring Application.
 ```java
 SpringApplicationBuilder builder = new SpringApplicationBuilder(APPLICATION.class);
 builder.application().addListeners(new ApplicationPidFileWriter());
 builder.run(args);
 ```
 
-## 2. 配置pid文件位置
+2. Config location of pid file.
 ```yaml
 spring:
   pid:

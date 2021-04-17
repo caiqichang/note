@@ -1,7 +1,7 @@
 # Spring Cloud Gateway
 
-## 1. 代理路由
-基于代码配置
+## Proxy Router
+- Base on Java Code
 ```java
 @Bean
 public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
@@ -24,7 +24,7 @@ public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
 }
 ```
 
-基于配置文件配置
+- Base on Properties File
 ```yaml
 spring:
   cloud:

@@ -1,12 +1,13 @@
-# 文件下载
+# File Download Interface
 
+- Parameter `filename` is required.
 ```java
 @GetMapping("/download")
 public ResponseEntity<InputStreamResource> download(HttpServletRequest request) {
 
     // ...
 
-    // 处理文件名
+    // deal with file name
     String userAgent = Optional.ofNullable(request.getHeader("User-Agent")).orElse("");
     if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
         // IE

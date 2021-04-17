@@ -27,7 +27,7 @@ public RestTemplate ignoreSslRestTemplate() {
                 HttpClients.custom().setSSLSocketFactory(new SSLConnectionSocketFactory(
                         new SSLContextBuilder()
                                 // Parameter 1 is certification of SSL.
-                                // Parameter 2 is trust strategy of SSL, return to trust all.
+                                // Parameter 2 is trust strategy of SSL, return true to trust all.
                                 .loadTrustMaterial(null, (chain, authType) -> true)
                                 .build(), 
                         // Close domain verifition.

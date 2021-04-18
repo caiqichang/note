@@ -1,47 +1,46 @@
-# 文件上传
+# File Upload
 
-## 1. 文件大小配置
-Spring Boot 配置
+## Setup size of request and file.
+- Config of Spring Boot (value are default)
 ```yaml
 spring:
   servlet:
     multipart:
-      # 文件大小，设置为-1则不限制，默认1MB
+      # Set -1 to unlimit
       max-file-size: 1MB
-      # 单次请求大小，设置为-1则不限制，默认10MB
+      # Set -1 to unlimit.
       max-request-size: 10MB
 ```
-Nginx 配置
+- Config of Nginx (value is default)
 ```ini
-# 可配置在http、server、location
-# 超过返回413，设置为0则不检查请求体大小，默认1m
+# Available in http, server and location. Return 413 if over. Set 0 to unlimit.
 client_max_body_size 1m;
 ```
 
-## 2. 接口
-application/octet-stream 流形式，只能一个文件，无法获取文件名
+## Interface
+- application/octet-stream -- in this type, file data is in request body, it can only upload one and can not get file name.
 ```java
-// 无论otherParam有没有@RequestParam，都会解释为url参数
+// Whether with @RequestParam or not, otherParam is always in part query of URL.
 @PostMapping("/upload")
 @ResponseBody
 public ResponseEntity upload(String otherParam, HttpServletRequest request) {
-    // 保存文件
+    // save file
     FileCopyUtils.copy(request.getInputStream(), new FileOutputStream(TARGET_FILE));
 
     //...
 }
 ```
 
-multipart/form-data 表单形式，允许多个文件，可以获取文件名
+- multipart/form-data -- (recommand) in this tpye, multi file are available and can get file name.
 ```java
-// 无论otherParam有没有@RequestParam，都会把url和表单的同名参数拼接，以逗号分隔
+// Whether with @RequestParam or not, otherParam will combine with same param in form separate by , (comma).
 @PostMapping("/upload")
 @ResponseBody
 public ResponseEntity upload(String otherParam, List<MultipartFile> files) {
     files.forEach(file -> {
-        // 获取原文件名
+        // get file name
         file.getOriginalFilename();
-        // 保存文件，PARAM可以是Path或File，但必需用绝对路径！！！
+        // save file, PARAM can be Path or File but must absolute.
         file.transferTo(PARAM);
 
         // ...
@@ -51,49 +50,49 @@ public ResponseEntity upload(String otherParam, List<MultipartFile> files) {
 }
 ```
 
-## 3. multipart/form-data 请求报文格式
-### 1. 请求头 <br/>
-Content-Type = multipart/form-data; boundary=BOUNDARY <br/>
-BOUNDARY 为任意字符串
+## Request of `multipart/form-data `
+1. Request Header
+- Content-Type: multipart/form-data; boundary=BOUNDARY
+  - BOUNDARY -- any string
 
-### 2. 请求体 <br/>
-普通参数
+- Request Body
+  - Normal Parameter 
 ```
 --BOUNDARY
-Content-Disposition: form-data; name="参数名"
+Content-Disposition: form-data; name="NAME_OF_PARAMETER"
 
-参数值
+VALUE_OF_PARAMETER
 ```
-文件参数
+2. File Parameter
 ```
 --BOUNDARY
-Content-Disposition: form-data; name="参数名"; filename="文件名"
+Content-Disposition: form-data; name="NAME_OF_PARAMETER"; filename="FILE_NAME"
 
-文件数据
+DATA_OF_FILE
 ```
-结束
+3. End
 ```
 --BOUNDARY--
 ```
-换行通常使用 \r\n <br/>
+Attention to wrap with `\r\n`. 
 
-## 4. jquery ajax 调用接口
-application/octet-stream
+## Invocate by Jquery Ajax 
+- application/octet-stream
 ```javascript
 $.ajax({
     url: API_URL,
     method: 'POST',
     data: FILE_DATA,  // document.querySelector(selector).files[0]
-    processData: false,  // 必需
+    processData: false,  // required
     beforeSend() {},
     complete() {},
     success(data) {},
     error(error) {},
     xhr() {
-        // 文件上传进度
+        // file upload progress
         let xhr = new XMLHttpRequest();
         xhr.upload.addEventListener('progress', event => {
-            // 完成百分比
+            // rate of upload progress
             let rate = Math.round(event.loaded / event.total * 100) + '%';
         });
         return xhr;
@@ -101,12 +100,11 @@ $.ajax({
 });
 ```
 
-multipart/form-data
+- multipart/form-data
 ```javascript
-// 表单对象
 let formData = new FormDate();
 formData.append('otherParam', otherParam);
-// 多文件的参数name相同
+// Multi file use the same parameter name
 formData.append('files', domElemt.files[0]);
 formData.append('files', domElemt.files[1]);
 formData.append('files', domElemt1.files[0]);
@@ -115,17 +113,17 @@ $.ajax({
     url: API_URL,
     method: 'POST',
     data: formData,
-    processData: false,  // 必需
-    contentType: false,  // 必需
+    processData: false,  // required
+    contentType: false,  // required
     beforeSend() {},
     complete() {},
     success(data) {},
     error(error) {},
     xhr() {
-        // 文件上传进度
+        // file upload progress
         let xhr = new XMLHttpRequest();
         xhr.upload.addEventListener('progress', event => {
-            // 完成百分比
+            // rate of upload progress
             let rate = Math.round(event.loaded / event.total * 100) + '%';
         });
         return xhr;
@@ -133,36 +131,34 @@ $.ajax({
 });
 ```
 
-## 5. RestTemplate 调用接口
-application/octet-stream
+## Invocate by RestTemplate
+- application/octet-stream
 ```java
-// 设置请求头
 HttpHeaders headers = new HttpHeaders();
 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-// 设置请求体
+
 HttpEntity<FileSystemResource> entity = new HttpEntity<>(new FileSystemResource(FILE), headers);
-// 发送请求
+
 ResponseEntity<String> response = new RestTemplate().postForEntity(API_URL, entity, String.class);
 ```
 
-multipart/form-data
+- multipart/form-data
 ```java
-// 设置请求头
 HttpHeaders headers = new HttpHeaders();
 headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-// 表单数据
+
 MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 formData.add("files", new FileSystemResource(FILE1));
 formData.add("files", new FileSystemResource(FILE2)));
 formData.add("otherParam", PARAM_VALUE);
-// 设置请求体
+
 HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(formData, headers);
-// 发送请求
+
 ResponseEntity<String> response = new RestTemplate().postForEntity(API_URL, entity, String.class);
 ```
 
-## 6. Node.js 调用接口
-application/octet-stream
+## Invocate by Node.js
+- application/octet-stream
 ```javascript
 const http = require('http');
 const fs = require('fs');
@@ -184,7 +180,7 @@ request.write(fs.readFileSync('E:/file1'));
 request.end();
 ```
 
-multipart/form-data
+- multipart/form-data
 ```javascript
 const http = require('http');
 const fs = require('fs');
@@ -226,20 +222,20 @@ request.write('--' + boundary + '--');
 request.end();
 ```
 
-## 7. 文件中转到其他接口，服务器不保存文件
+## Transfer to outer interface and never save file.
 
-multipart/form-data 转发 application/octet-stream
+- multipart/form-data to application/octet-stream
 ```java
-// 参照RestTemplate发送application/octet-stream请求
-// 将 MultipartFile 转换成 ByteArrayResource，请求体使用 ByteArrayResource
+// Reference to RestTemplate sending application/octet-stream request.
+// Trans MultipartFile to ByteArrayResource, and use ByteArrayResource for request body.
 HttpEntity<ByteArrayResource> entity = new HttpEntity<>(new ByteArrayResource(MultipartFile.getBytes()), headers);
 ```
 
-multipart/form-data 转发 multipart/form-data
+- multipart/form-data to multipart/form-data
 ```java
-// 参照RestTemplate发送multipart/form-data请求
-// 将 MultipartFile 转换成 ByteArrayResource，用 ByteArrayResource 代替 FileSystemResource
-// 必需重写 getFilename()
+// Reference to RestTemplate sending multipart/form-data request.
+// Trans MultipartFile to ByteArrayResource, use ByteArrayResource to replace FileSystemResource.
+// Require to override getFilename(), because Multipart File need file name.
 formData.add("files", new ByteArrayResource(MultipartFile.getBytes()) {
     @Override
     public String getFilename() {
@@ -248,25 +244,25 @@ formData.add("files", new ByteArrayResource(MultipartFile.getBytes()) {
 });
 ```
 
-application/octet-stream 转发 multipart/form-data
+- application/octet-stream to multipart/form-data
 ```java
-// 参照RestTemplate发送multipart/form-data请求
-// 将 HttpServletRequest.getInputStream() 转换为 ByteArrayOutputStream，请求体使用 ByteArrayResource
-// 必需重写 getFilename()
+// Reference to RestTemplate sending multipart/form-data request.
+// Trans HttpServletRequest.getInputStream() to ByteArrayOutputStream, and use ByteArrayResource for request body.
+// Require to override getFilename(), because Multipart File need file name (attention that octet-stream without file name).
 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 FileCopyUtils.copy(HttpServletRequest.getInputStream(), outputStream);
 HttpEntity<ByteArrayResource> entity = new HttpEntity<>(new ByteArrayResource(outputStream.toByteArray()) {
     @Override
     public String getFilename() {
-        return MultipartFile.getOriginalFilename();
+        return "CUSTOM_FILE_NAME";
     }
 }, headers);
 ```
 
-application/octet-stream 转发 application/octet-stream
+- application/octet-stream to application/octet-stream
 ```java
-// 参照RestTemplate发送application/octet-stream请求
-// 将 HttpServletRequest.getInputStream() 转换为 ByteArrayOutputStream，请求体使用 ByteArrayResource
+// Reference to RestTemplate sending application/octet-stream request.
+// Trans HttpServletRequest.getInputStream() to ByteArrayOutputStream, and use ByteArrayResource for request body.
 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 FileCopyUtils.copy(HttpServletRequest.getInputStream(), outputStream);
 HttpEntity<ByteArrayResource> entity = new HttpEntity<>(new ByteArrayResource(outputStream.toByteArray()), headers);

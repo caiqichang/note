@@ -1,8 +1,8 @@
-# Spring 异常处理
+# Exception Handler
 
-- 全局异常处理
+- Global Exception Handler
 ```java
-@ControllerAdvice({指定Controller，未指定则为全部})
+@ControllerAdvice({Order Controller or All})
 public class GlobalExceptionHandler {
     @ExceptionHandler({AnyException.clss})
     public ResponseEntity AnyExceptionHandler(AnyException anyException) {
@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
 <br/>
 
-- 局部异常处理，仅捕获当前Controller的异常，优先于全局
+- Local Exception Handler, only for current controller, propity is higer than global.
 ```java
 @Controller
 public class ApiController {
@@ -27,24 +27,21 @@ public class ApiController {
 }
 ```
 
-<br/>
-
 - @ExceptionHandler
-  - 参数 -- Exception HandleMethod WebRequest NativeWebRequest 
+  - Parameter -- Exception HandleMethod WebRequest NativeWebRequest 
   ServletRequest ServletResponse HttpSession Principal HttpMethod 
   Locale TimeZone ZoneId OutputStream Writer Map Model ModelMap 
   RedirectAttributes @SessionAttribute @RequestAttribute
-  - 返回值 -- @ResponseBody HttpEntity ResponseEntity String View Map 
+  - Return -- @ResponseBody HttpEntity ResponseEntity String View Map 
   Model ModelAndView @ModelAttribute void 
 
-  <br/>
-
-- 异常委托 <br/>
-有些异常无法被Spring捕获，例如Spring Security的AuthenticationException和AccessDeniedException
+- Exception Entrustment |
+  - Some Exception can not be catched by Spring, 
+    like AuthenticationException and AccessDeniedException of Spring Security, or other exception out of Spring.
 ```java
 @Autowired
 private HandlerExceptionResolver handlerExceptionResolver;
 
-// 委托给全局异常处理
+// entrust to Spring Exception Handler
 handlerExceptionResolver.resolveException(HttpServletRequest, HttpServletResponse, Object, Exception);
 ```

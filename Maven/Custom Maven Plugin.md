@@ -22,7 +22,7 @@
 </dependency>
 ```
 
--. Mojo (Maven Goal)
+- Mojo (Maven Goal)
 ```java
 @Mojo(name = "goal-name", defaultPhase = LifecyclePhase)
 public class ExMojo extends AbstractMojo {

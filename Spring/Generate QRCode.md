@@ -1,6 +1,6 @@
-# 生成二维码
+# Generate QRCode
 
-## 1. Maven依赖
+1. Dependency
 ```xml
 <dependency>
     <groupId>com.google.zxing</groupId>
@@ -8,23 +8,20 @@
 </dependency>
 ```
 
-## 2. 生成缓存图片
+2. Generate image.
 ```java
 Map<EncodeHintType, Object> hints = new HashMap<>();
-// 二维码内容编码
+// encoding of content
 hints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8.name());
-// 二维码外边距
+// margin of qrcode
 hints.put(EncodeHintType.MARGIN, 1);
 
-// 生成二维码像素矩阵
-// CONTENT -- 二维码内容
-// WIDTH -- 二维码宽度
-// HEIGHT -- 二维码长度
+// Generate pixel matrix of qrcode.
 BitMatrix bitMatrix = new MultiFormatWriter().encode(CONTENT, BarcodeFormat.QR_CODE, WIDTH, HEIGHT, hints);
-// 生成缓存图片
+// Generate image in memory.
 BufferedImage bufferedImage = new BufferedImage(bitMatrix.getWidth(), bitMatrix.getHeight(), BufferedImage.TYPE_INT_RGB);
 
-// 填充图片，设置像素颜色
+// Fill each pixel with color.
 for (int x = 0; x < bitMatrix.getWidth(); x++) {
     for (int y = 0; y < bitMatrix.getHeight(); y++) {
         bufferedImage.setRGB(x, y, bitMatrix.get(x, y) ? Color.BLACK.getRGB() : Color.WHITE.getRGB());
@@ -32,25 +29,25 @@ for (int x = 0; x < bitMatrix.getWidth(); x++) {
 }
 ```
 
-## 3. 生成文件或输出流
-生成文件
+3. Generate to file or output stream.
+- To file
 ```java
-// TYPE -- 文件类型，通过ImageIO.getWriterFormatNames()获取可用列表
-// FILE_PATH -- 输出的文件路径
+// TYPE -- file type, use ImageIO.getWriterFormatNames() to get available list.
+// FILE_PATH -- output path
 ImageIO.write(bufferedImage, TYPE, new FileOutputStream(new File(FILE_PATH)));
 ```
-生成输出流，通常用于接口下载
+- To output stream (general for downloading)
 ```java
-// TYPE -- 文件类型，通过ImageIO.getWriterFormatNames()获取可用列表
+// TYPE -- file type, use ImageIO.getWriterFormatNames() to get available list.
 ImageIO.write(bufferedImage, TYPE, ByteArrayOutputStream);
 ```
 
-## 4. 下载接口
+4. Download Interface
 ```java
 public ResponseEntity<InputStreamResource> qrcode(HttpServletRequest request） {
     // ...
 
-    // 处理文件名
+    // deal with file name
     String userAgent = Optional.ofNullable(request.getHeader("User-Agent")).orElse("");
     if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
         // IE

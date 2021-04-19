@@ -59,7 +59,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 public class ApiWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        // Get sub protocol from session, type is UnmodifiableList.
+        // Get sub protocol of response from session, type is UnmodifiableList.
         session.getHandshakeHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
     }
 
@@ -85,19 +85,22 @@ public class ApiWebSocketHandler implements WebSocketHandler {
 }
 ```
 
-3. Handshake Config
+3. Handshake Interceptor
 - Implement `HandshakeInterceptor` Interface
 ```java
 @Component
 public class ApiHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        // Get request protocol, type is LinkedList.
+        // Get sub protocol of request, type is LinkedList.
         request.getHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
-        // Set response sub protocol
+    
+        // Authentication ...
+
+        // Set sub protocol of response if certified.
         response.getHeaders().add(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL, subPotocol);
-        
-        // Return true of false to establish. Attention to make sure the rule of sub protocol in request and response header.
+
+        // Return true to establish connection or false to reject. 
     }
 
     @Override
@@ -122,17 +125,14 @@ public class WebSocketConfig {
 ```
 
 2. Interface Handler
-- @ServerEndpoint
-  - value -- Path
-  - subprotocols
-  - configurator 
 ```java
 @Component
-@ServerEndpoint(value = "/api", subprotocols = {"SUB_PROTOCOL"}, configurator = ApiWebsocketConfigurator.class)
+// Value is path of interface. 
+@ServerEndpoint(value = "/api", configurator = ApiWebsocketConfigurator.class)
 public class ApiWebsocket {
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        // Get sub protocol from session. In fact, it calls method ServerEndpointConfig.Configurator$getNegotiatedSubprotocol() as follows.
+        // Get sub protocol of response from session. 
         session.getNegotiatedSubprotocol();
     }
 
@@ -148,34 +148,18 @@ public class ApiWebsocket {
 ```
 
 3. Configurator
-
-- todo
-
 ```java
 @Component
 public class ApiWebsocketConfigurator extends ServerEndpointConfig.Configurator {
-    @Override
-    public boolean checkOrigin(String originHeaderValue) {
-        return super.checkOrigin(originHeaderValue);
-        // Return true or false to establish connection.
-        // Invocated before modifyHandshake, but require to follow the rule of sub protocol in request and response header.
-    }
 
     @Override
     public String getNegotiatedSubprotocol(List<String> supported, List<String> requested) {
-        return super.getNegotiatedSubprotocol(supported, requested);
-        // For getting sub protocol in @ServerEndpoint (use session), invocated before modifyHandshake.
-        // Can not change response header in modifyHandshake if this is invocated.
-    }
+        String result = super.getNegotiatedSubprotocol(supported, requested);
+        // requested is list of sub protocol of request.
 
-    @Override
-    public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-        super.modifyHandshake(sec, request, response);
+        // Authentication ....
 
-        // Get request sub protocol, type is UnmodifiableRandomAccessList.
-        request.getHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
-        // Set response sub protocol, attention that it is effective if never set subprotocols of @ServerEndpoint.
-        response.getHeaders().put(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL, Collections.singletonList("ENABLE_SUB_PROTOCOL"));
+        // Return sub protocol of response if certified or default result if not.
     }
 }
 ```

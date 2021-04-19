@@ -1,4 +1,4 @@
-# Generate Thumbnail Image in Memory
+# Generate Thumbnail Image
 
 1. Dependency
 ```xml

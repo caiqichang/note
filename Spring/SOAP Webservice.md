@@ -1,6 +1,8 @@
-# SpringBoot开发SOAP -- 基于Apache CXF (JAX-WS)
+# SOAP Webservice
 
-## 1. 依赖
+> Base on Apache CXF (JAX-WS)
+
+1. Dependency
 ```xml
 <dependency>
     <groupId>org.apache.cxf</groupId>
@@ -9,18 +11,18 @@
 </dependency>
 ```
 
-## 2. 配置类
+2. Configuration
 ```java
 @Configuration
 public class WebServiceConfig {
-    // bean名称必需为cxfServlet
+    // Bean name must be cxfServlet.
     @Bean("cxfServlet")
     public ServletRegistrationBean<CXFServlet> servletRegistrationBean() {
-        // 通常webservice的context-path不要设置为 /* ，避免覆盖DispatcherServlet
+        // Context path of webservice. Do not set to /* generally, or it will override DispatcherServlet.
         return new ServletRegistrationBean<>(new CXFServlet(), WEBSERVER_PATH + "/*");
     }
 
-    // 用于发布webservice端点
+    // use for publish webservice endpoint
     @Bean(Bus.DEFAULT_BUS_ID)
     public SpringBus springBus() {
         return new SpringBus();
@@ -28,40 +30,41 @@ public class WebServiceConfig {
 }
 ```
 
-## 3. WebService接口
+3. Webservice Interface
 ```java
 @Component
 @WebService
 public class WEBSERVICE_INTERFACE {
-    @WebMethod
+    @WebMethod(operationName = "METHOD_NAME")
     public RETURN_TYPE METHOD_NAME(@WebParam(name = "PARAM_NAME") PARAM_TYPE param) {
         // ...
     }
 }
 ```
 
-## 4. 发布webservice端点
+4. Publish Webservice Endpoint
 ```java
 @Configuration
 public class WebServiceEndpoint {
-    // 发布多个webservice接口需要配置多个bean
+    // Config multiple bean to publish more interface.
     @Bean
     public Endpoint INTERFACE_ENDPOINT(SpringBus springBus, WEBSERVICE_INTERFACE wi) {
-        // 通常将webservice接口的bean通过参数注入
+        // Generally inject interface by bean. Also can new an instance.
         EndpointImpl endpoint = new EndpointImpl(springBus, wi);
-        // 访问该接口的URL
+        // Path of interface.
         endpoint.publish(INTERFACE_URL);
         return endpoint;
     }
 }
 ```
 
-## 5. 接口地址
+5. WSDL of Webservice
 ```
 GET http://{IP}:{PORT}{CONTENT_PATH}{WEBSERVER_PATH}{INTERFACE_URL}?wsdl
 ```
 
-### 6. Soap请求报文格式
+6. Content of Soap Request
+- Request
 ```xml
 POST http://{IP}:{PORT}{CONTENT_PATH}{WEBSERVER_PATH}{INTERFACE_URL}?wsdl
 Content-Type: text/xml; charset=UTF-8
@@ -78,7 +81,7 @@ Content-Type: text/xml; charset=UTF-8
 
 ###
 ```
-通常响应格式
+- Response
 ```xml
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>

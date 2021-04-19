@@ -1,12 +1,12 @@
-# Spring WebSocket
+# WebSocket
 
-## WebApi调用WebSocket
-- 协议：http对应ws，https对应wss
-- subPotocol -- 可选参数
-  - 子协议，一个字符串或字符串数组，位于请求头Sec-WebSocket-Protocol
-  - 如果带有子协议，建立连接时服务器返回的响应头必须带有Sec-WebSocket-Protocol，
-  值为该子协议字符串；如果子协议是数组，则值为数组中的一个元素
-  - 通常用于认证授权（如token）
+## Web Api of WebSocket
+- Protocol: http -> ws, https -> wss
+- SubProtocol -- optional
+  - A string or an array of string, locate at request header `Sec-WebSocket-Protocol`.
+  - If request with sub protocol, response must with header `Sec-WebSocket-Protocol` when connection established.
+    The value of `Sec-WebSocket-Protocol` must equal to (if a string) or one of (if an array) sub protocol.
+  - General use for authentication (like token).
 ```javascript
 let websocket = new WebSocket('ws://ip:port/context-path/api', subPotocol);
 websocket.onopen = event => {};
@@ -15,8 +15,8 @@ websocket.onerror = event => {};
 websocket.onmessage = event => {};
 ```
 
-## 服务端
-* Maven依赖
+## Server
+- Dependency
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -24,8 +24,8 @@ websocket.onmessage = event => {};
 </dependency>
 ```
 
-## 基于Spring的WebSocket
-1. 配置
+## Base on Spring WebSocket (recommand)
+1. Configuration
 ```java
 @Configuration
 @EnableWebSocket
@@ -37,44 +37,45 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
+        // Register
         webSocketHandlerRegistry
-                // 配置websocket接口处理器及url
+                // Config interface handler and path.
                 .addHandler(springWebsocket, "/api")
-                // 配置握手处理器（可选）
+                // Config handshake interceptor (optional)
                 .addInterceptors(apiHandshakeInterceptor);
+
+        // Register more ...
     }
 }
 ```
 
-2. 接口处理
-- WebSocketHandler 接口
-  - AbstractWebSocketHandler 抽象类
-    - TextWebSocketHandler 对应 TextMessage 常用
-    - BinaryWebSocketHandler 对应 BinaryMessage
+2. Interface Handler
+- Interface `WebSocketHandler` 
+  - Absolute class `AbstractWebSocketHandler`
+    - Class `TextWebSocketHandler` for type `TextMessage` (general)
+    - Class `BinaryWebSocketHandler` for type `BinaryMessage`
 ```java
 @Component
 public class ApiWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        // 对应onOpen
-        // 在session中获取请求头的子协议 类型为UnmodifiableList
+        // Get sub protocol from session, type is UnmodifiableList.
         session.getHandshakeHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        // 对应onMessage
-        // WebSocketMessage包括Text, Binary, Pong（此端发出ping，接收到彼方的Pong）
+        // WebSocketMessage type include: Text, Binary, Pong (here ping and there pong).
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        // 对应onError
+        
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        // 对应onClose
+        
     }
 
     @Override
@@ -84,19 +85,19 @@ public class ApiWebSocketHandler implements WebSocketHandler {
 }
 ```
 
-3. 握手处理
-- HandshakeInterceptor 接口
+3. Handshake Config
+- Implement `HandshakeInterceptor` Interface
 ```java
 @Component
 public class ApiHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        // 获取请求头子协议 类型为LinkedList
+        // Get request protocol, type is LinkedList.
         request.getHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
-        // 设置响应头子协议
+        // Set response sub protocol
         response.getHeaders().add(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL, subPotocol);
         
-        // 返回true或false是否建立连接，但是请求头和响应头依然必须有相同的子协议才能建立连接
+        // Return true of false to establish. Attention to make sure the rule of sub protocol in request and response header.
     }
 
     @Override
@@ -106,11 +107,9 @@ public class ApiHandshakeInterceptor implements HandshakeInterceptor {
 }
 ```
 
-## 基于javax的WebSocket
+## Base on Javax WebSocket
 
-todo
-
-1. 配置
+1. Configuration
 ```java
 @Configuration
 @EnableWebSocket
@@ -122,18 +121,18 @@ public class WebSocketConfig {
 }
 ```
 
-2. 接口
+2. Interface Handler
 - @ServerEndpoint
-  - value 接口url
-  - subprotocols 子协议
-  - configurator 配置类
+  - value -- Path
+  - subprotocols
+  - configurator 
 ```java
 @Component
-@ServerEndpoint(value = "/api", subprotocols = {"子协议数组"}, configurator = ApiWebsocketConfigurator.class)
+@ServerEndpoint(value = "/api", subprotocols = {"SUB_PROTOCOL"}, configurator = ApiWebsocketConfigurator.class)
 public class ApiWebsocket {
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        // 获取子协议，调用ServerEndpointConfig.Configurator的getNegotiatedSubprotocol方法，见下文
+        // Get sub protocol from session. In fact, it calls method ServerEndpointConfig.Configurator$getNegotiatedSubprotocol() as follows.
         session.getNegotiatedSubprotocol();
     }
 
@@ -148,31 +147,35 @@ public class ApiWebsocket {
 }
 ```
 
-3. configurator配置类
+3. Configurator
+
+- todo
+
 ```java
 @Component
 public class ApiWebsocketConfigurator extends ServerEndpointConfig.Configurator {
     @Override
     public boolean checkOrigin(String originHeaderValue) {
         return super.checkOrigin(originHeaderValue);
-        // 返回true或false是否建立连接。先于modifyHandshake执行，但是请求头和响应头依然必须有相同的子协议才能建立连接
+        // Return true or false to establish connection.
+        // Invocated before modifyHandshake, but require to follow the rule of sub protocol in request and response header.
     }
 
     @Override
     public String getNegotiatedSubprotocol(List<String> supported, List<String> requested) {
         return super.getNegotiatedSubprotocol(supported, requested);
-        // 在@ServerEndpoint中session获取的子协议，先于modifyHandshake执行
-        // 此处返回后不可再在modifyHandshake中设置响应头
+        // For getting sub protocol in @ServerEndpoint (use session), invocated before modifyHandshake.
+        // Can not change response header in modifyHandshake if this is invocated.
     }
 
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
         super.modifyHandshake(sec, request, response);
 
-        // 获取请求头子协议 类型为UnmodifiableRandomAccessList
+        // Get request sub protocol, type is UnmodifiableRandomAccessList.
         request.getHeaders().get(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL);
-        // 设置响应头子协议，此时不能设置@ServerEndpoint的subprotocols
-        response.getHeaders().put(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL, Collections.singletonList("允许的子协议"));
+        // Set response sub protocol, attention that it is effective if never set subprotocols of @ServerEndpoint.
+        response.getHeaders().put(WebSocketHttpHeaders.SEC_WEBSOCKET_PROTOCOL, Collections.singletonList("ENABLE_SUB_PROTOCOL"));
     }
 }
 ```

@@ -1,4 +1,4 @@
-# Max Number of Tomcat Concurrent
+# Max Number of Concurrent
 
 - Configuration of Spring Boot (the values are default)
 ```yaml

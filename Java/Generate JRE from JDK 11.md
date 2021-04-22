@@ -2,5 +2,5 @@
 
 - Create Complete JRE
 ```
-jlink --add-modules=ALL-MODULE-PATH --output OUTPUT_DIRECT
+%JAVA_HOME%\bin\jlink --add-modules=ALL-MODULE-PATH --output OUTPUT_DIRECT
 ```

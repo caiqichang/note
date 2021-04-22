@@ -15,7 +15,7 @@
 | Variable | Value |
 | - | - |
 | JAVA_HOME | D:\openjdk\openjdk |
-| java11 | D:\openjdk11\openjdk11\bin |
+| java11 | D:\openjdk11\openjdk11 |
 | M2_HOME | D:\maven\maven |
 | MAVEN_USER_HOME | D:\maven |
 | GRADLE_USER_HOME | D:\gradle\repository |

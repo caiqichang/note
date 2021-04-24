@@ -3,39 +3,35 @@
 > Install on Windows by ZIP archive.
 
 1. Configuration File.
-- BASEDIR -- Install Directory
-- `C:\my.ini` `C:\my.cnf` or `BASEDIR\my.ini` `BASEDIR\my.cnf`
+- `my.ini` or `my.cnf`
 ```ini
 [mysqld]
 datadir=D:\mysql_data
 ```
 
 2. Initialize Data Directory.
-- Without password for root.
-```
+```sh
+# without password for root
 mysql --initialize-insecure
-```
-- With random password (in `mysql_data\*.err`) for root.
-```
+
+# with random password (in `mysql_data\*.err`) for root
 mysql --initialize
 ```
 
 3. Install MySQL Service.
 - Service Name: MySQL
-```
-mysqld --install MySQL
-```
-```
+```sh
+mysqld --install MySQL --defaults-file="D:\mysql\my.ini"
+
 sc start MySQL
 ```
 
 5. Change password of root.
-- Without password.
-```
+```sh
+# without password
 mysql -u root --skip-password
-```
-- With random password.
-```
+
+# with random password
 mysql -u root -p
 ```
 ```sql

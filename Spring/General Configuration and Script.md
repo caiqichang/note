@@ -86,21 +86,3 @@ if [ -f $pidFile ];then
 	fi
 fi
 ```
-
-## Run after system start.
-1. Windows
-- Create shortcut of startup script at location: 
-```
-%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-```
-
-2. Linux
-- todo
-
-## Install as service.
-1. Windows 
-- Recommand to use `winsw`.
-- Attention that Windows Service can not use GUI.
-
-2. Linux
-- todo

@@ -12,16 +12,16 @@ datadir=D:\mysql_data
 2. Initialize Data Directory.
 ```sh
 # without password for root
-mysql --initialize-insecure
+mysqld --defaults-file="D:\mysql\my.ini" --initialize-insecure
 
 # with random password (in `mysql_data\*.err`) for root
-mysql --initialize
+mysqld --defaults-file="D:\mysql\my.ini" --initialize
 ```
 
 3. Install MySQL Service.
 - Service Name: MySQL
 ```sh
-mysqld --install MySQL --defaults-file="D:\mysql\my.ini"
+mysqld --defaults-file="D:\mysql\my.ini" --install MySQL
 
 sc start MySQL
 ```

@@ -1,4 +1,4 @@
-# Deploy SPA
+# SPA Deployment by Spring boot
 
 - Attentions:
 1. Keep the same with `Base URL` of Front-end and `server.servlet.context-path` of Back-end.

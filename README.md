@@ -1,4 +1,4 @@
 # note
 
-> Daily Note
+Daily Note
 

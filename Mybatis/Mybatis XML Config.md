@@ -6,7 +6,8 @@ it means that only one of `XML Config` or `Java Config` could exist.
 2. This file is relative to `src/main/resources`.
 ```yaml
 mybatis:
-  config-location: classpath:mybatis/MybatisConfig.xml
+  config-location: classpath:mybatis/config/MybatisConfig.xml
+  mapper-locations: classpath:mybatis/mapper/**/*Mapper.xml
 ```
 
 ## MybatisConfig.xml
@@ -27,7 +28,7 @@ mybatis:
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-<mapper>
+<mapper namespace="">
     
 </mapper>
 ```

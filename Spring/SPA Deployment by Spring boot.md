@@ -28,7 +28,7 @@ public class IndexController {
      *                 Ignore if it with <code>.</code>, sometime is css or js file. 
      * @return Corward to root path
      */
-    @GetMapping("/**/{lastPath:[^\\.]*}")
+    @GetMapping("/**/{lastPath:[^\\.]+}")
     public String index(@PathVariable String lastPath) {
         // forward to root path, it means index.html
         return "forward:/";

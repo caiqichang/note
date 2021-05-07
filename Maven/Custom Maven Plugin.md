@@ -1,5 +1,7 @@
 # Custom Maven Plugin
 
+> Java 11 seems have some bugs, use Java 8 instead.
+
 - Project always named as `xxx-maven-plugin`.
 
 - Packaging (at pom.xml) as `maven-plugin`.

@@ -9,7 +9,7 @@
 %JAVA_HOME%\bin
 %M2_HOME%\bin
 %NODEJS%\nodejs
-%NODEJS%\node_global
+%NODEJS%\nodejs_global
 %GIT%\bin
 ```
 

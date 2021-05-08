@@ -1,7 +1,5 @@
 # Custom Maven Plugin
 
-> Java 11 seems have some bugs, use Java 8 instead.
-
 - Project always named as `xxx-maven-plugin`.
 
 - Packaging (at pom.xml) as `maven-plugin`.
@@ -9,7 +7,7 @@
 <packaging>maven-plugin</packaging>
 ```
 
-- Dependency:
+- Dependency
 ```xml
 <dependency>
     <groupId>org.apache.maven</groupId>
@@ -22,6 +20,15 @@
     <version></version>
     <scope>provided</scope>
 </dependency>
+```
+
+- Plugin (recommend, required if using Java 11)
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-plugin-plugin</artifactId>
+    <version></version>
+</plugin>
 ```
 
 - Mojo (Maven Goal)

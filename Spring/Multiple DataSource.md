@@ -1,19 +1,26 @@
 # Multiple DataSource
 
 ## Properties
-- Attention to use `jdbc-url` instead of `url`. 
-  This is different with single datasource. (due to `Hikari` )
+- Use `jdbc-url` instead of `url`. 
+  Different with single datasource. (due to `Hikari`)
+- `key` is identity of each datasource.
+```yml
+datasource:
+  list:
+    - key: 
+      username: 
+      password: 
+      jdbc-url: 
+    - key: 
+      username: 
+      password: 
+      jdbc-url: 
+```
+- Required if using `JPA`.
 ```yml
 spring:
-  datasource:
-    db1:
-      username:
-      password:
-      jdbc-url:
-    db2:
-      username:
-      password:
-      jdbc-url:
+  jpa:
+    database-platform: 
 ```
 
 ## DataSource Router
@@ -21,8 +28,8 @@ spring:
 public class DataSourceRouter {
     private static final ThreadLocal<String> currentDataSource = new ThreadLocal<>();
 
-    public static void setCurrentDataSource(String dataSourceTag) {
-        currentDataSource.set(dataSourceTag);
+    public static void setCurrentDataSource(String key) {
+        currentDataSource.set(key);
     }
 
     public static String getCurrentDataSource() {
@@ -41,48 +48,52 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
 }
 ```
 
-## DataSource Configuration
+## DataSource Properties
+- Reading from property file, like: `datasource.list`.
 ```java
-public interface DataSourceTag {
-    String DB1 = "db1";
-    String DB2 = "db2";
+@Component
+@ConfigurationProperties(prefix = "datasource")
+public class DataSourceProp {
+    private List<Map<String, String>> list;
+
+    public List<Map<String, String>> getList() {
+        return list;
+    }
+
+    public void setList(List<Map<String, String>> list) {
+        this.list = list;
+    }
 }
 ```
-- Must make one `@Primary` in multiple datasource. 
+
+## DataSource Configuration
 ```java
 @Configuration
 public class DataSourceConfig {
-
-    @Bean(DataSourceTag.DB1)
-    @ConfigurationProperties("spring.datasource.db1")
-    public DataSource db1() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean(DataSourceTag.DB2)
-    @ConfigurationProperties("spring.datasource.db2")
-    public DataSource db2() {
-        return DataSourceBuilder.create().build();
-    }
+    @Autowired
+    private DataSourceProp dataSourceProp;
 
     @Bean
-    @Primary 
-    public RoutingDataSource routingDataSource(@Qualifier(DataSourceTag.DB1) DataSource db1, @Qualifier(DataSourceTag.DB2) DataSource db2) {
-        RoutingDataSource routingDataSource =  new RoutingDataSource();
-        routingDataSource.setTargetDataSources(Map.of(DataSourceTag.DB1, db1, DataSourceTag.DB2, db2));
-        routingDataSource.setDefaultTargetDataSource(db1);  // optional
+    public RoutingDataSource routingDataSource() {
+        RoutingDataSource routingDataSource = new RoutingDataSource();
+        Map<Object, Object> dataSources = new HashMap<>();
+        dataSourceProp.getList().forEach(i -> {
+            dataSources.put(i.get("key"),
+                    DataSourceBuilder.create()
+                            .url(i.get("jdbc-url"))
+                            .username(i.get("username"))
+                            .password(i.get("password"))
+                            .build()
+            );
+        });
+        routingDataSource.setTargetDataSources(dataSources);
         return routingDataSource;
     }
 }
 ```
-- Make `RoutingDataSource` primary ensure to switch datasource dynamically.
-  In this way, need to exclude datasource autoconfiguration, or it will cause circular dependency.
-```java
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-```
 
 ## Usage
 ```java
-DataSourceRouter.setCurrentDataSource(DataSourceTag.DB2);
+DataSourceRouter.setCurrentDataSource(key);
 // do something with database ...
 ```

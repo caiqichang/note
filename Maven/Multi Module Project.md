@@ -10,7 +10,6 @@
     <artifactId></artifactId>
     <version>1.0.0</version>
     <name></name>
-    <description></description>
     <packaging>pom</packaging>
 
     <properties>
@@ -75,9 +74,7 @@
         <relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId></artifactId>
-	<version>1.0.0</version>
 	<name></name>
-	<description></description>
 	<packaging>jar</packaging>
 
 	<dependencies>

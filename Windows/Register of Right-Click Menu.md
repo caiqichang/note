@@ -21,6 +21,7 @@
 ## backup
 - file
   - vscode: "D:\vscode\Code.exe" "%1"
+  - intellij: "D:\intellij_idea\bin\idea64.exe" "-e" "%1"
 - background of folder
   - git-bash: "D:\git\git-bash.exe"
   - git-gui: "D:\git\cmd\git-gui.exe"

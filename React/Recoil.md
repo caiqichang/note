@@ -38,23 +38,22 @@ const ${NAME} = atom({
 export default function () {
     const [state, setState] = useRecoilState(${NAME});
 
-    return {
-        state,
-        action: {
-            action1() {
-                let s = { ...state };
-                // change state by s ....
+    const action = {
+        action1() {
+            let s = { ...state };
+            // change state by s ....
 
-                // update state
-                setState(s);
-            },
-            action2(arg) {
-                // ...
-
-                return ...;
-            }
+            // update state
+            setState(s);
         },
+        action2(arg) {
+            // ...
+
+            return ...;
+        };
     };
+
+    return {state, action};
 };
 ```
 

@@ -22,7 +22,7 @@ ReactDOM.render(
 
 - Define store.
 ```javascript
-import { atom, useRecoilState } from 'recoil';
+import {atom, selector, useRecoilValue, useSetRecoilState} from 'recoil';
 
 const defaultValue = () => {
     return {
@@ -30,13 +30,20 @@ const defaultValue = () => {
     };
 };
 
-const ${NAME} = atom({
-    key: '${NAME}',
+let state = defaultValue();
+
+const ${NAME}Atom = atom({
+    key: '${NAME}Atom',
     default: defaultValue(),
 });
 
+const ${NAME}Selector = selector({
+    key: '${NAME}Selector',
+    set: ({set}, value) => set(${NAME}Atom, JSON.parse(JSON.stringify(value))),
+});
+
 export default function () {
-    const [state, setState] = useRecoilState(${NAME});
+    const setState = useSetRecoilState(${NAME}Selector);
 
     const action = {
         action1() {
@@ -53,7 +60,7 @@ export default function () {
         };
     };
 
-    return {state, action};
+    return {state: useRecoilValue(${NAME}Atom), action};
 };
 ```
 

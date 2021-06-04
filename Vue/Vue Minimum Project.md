@@ -11,21 +11,20 @@
 
 ## Project Content
 ```
-+-- public
-| `-- favicon.ico
-| `-- index.html
-+-- src
-| +-- router
-| | `-- index.js
-| +-- store
-| | `-- index.js
-| `-- App.vue
-| `-- main.js
-`-- .env
-`-- .env.prod
-`-- .gitignore
-`-- package.json 
-`-- vue.config.js
+├── public
+│   └── index.html
+├── src
+│   ├── router
+│   │   └── index.js
+│   ├── store
+│   │   └── index.js
+│   ├── App.vue
+│   └── main.js
+├── .env
+├── .env.prod
+├── .gitignore
+├── package.json 
+└── vue.config.js
 ```
 
 ## File Content

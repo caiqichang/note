@@ -10,12 +10,12 @@ npm install --save-dev electron
 
 ## Structure and File
 ```
-+-- project
-| +-- src
-| | +-- view
-| | | `-- index.html
-| | `-- main.js
-| `-- package.json
+└── project
+    ├── src
+    │   ├── view
+    │   │   └── index.html
+    │   └── main.js
+    └── package.json
 ```
 
 package.json

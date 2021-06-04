@@ -11,20 +11,20 @@
 
 ## Project Structure
 ```
-+-- public
-| `-- favicon.ico
-| `-- index.html
-+-- src
-| +-- router
-| | `-- Router.js
-| +-- store
-| `-- App.js
-| `-- index.js
-| `-- setupProxy.js
-`-- .env
-`-- .env.prod
-`-- .gitignore
-`-- package.json 
+├── public
+│   └── index.html
+├── src
+│   ├── router
+│   │   └── Router.js
+│   ├── store
+│   │   └── StoreBuilder.js
+│   ├── App.js
+│   ├── index.js
+│   └── setupProxy.js
+├── .env
+├── .env.prod
+├── .gitignore
+└── package.json 
 ```
 
 ## File Content
@@ -117,7 +117,9 @@ import React from "react";
 
 function Router(props) {
     
-    let routes = [];
+    let routes = [
+
+    ];
 
     return (
         <Switch>
@@ -129,7 +131,38 @@ function Router(props) {
 }
 
 export default Router;
+```
 
+### src/store/StoreBuilder.js
+```javascript
+import {atom, selector, useRecoilValue, useSetRecoilState} from 'recoil';
+
+export default function (key, state, action) {
+    const keyAtom = atom({
+        key: `${key}Atom`,
+        default: JSON.parse(JSON.stringify(state)),
+    });
+
+    const keySelector = selector({
+        key: `${key}Selector`,
+        set: ({set}, value) => set(keyAtom, JSON.parse(JSON.stringify(value))),
+    });
+
+    return function () {
+        const setState = useSetRecoilState(keySelector);
+
+        let actionWrapper = {};
+        Object.keys(action).forEach(k => {
+            actionWrapper[k] = function () {
+                let result = action[k].apply(null, [].slice.call(arguments));
+                setState(state);
+                return result;
+            };
+        });
+
+        return {state: useRecoilValue(keyAtom), action: actionWrapper};
+    };
+};
 ```
 
 ### src/App.js
@@ -156,6 +189,7 @@ export default App;
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App.js';
+import {RecoilRoot} from 'recoil';
 
 ReactDOM.render(
     <React.Fragment>

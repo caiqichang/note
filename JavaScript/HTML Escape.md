@@ -4,9 +4,9 @@
 - Must escape `&` first, because other escape will generate `&`.
 
 ```javascript
-function escapeHtml(src) {
-    if (typeof src !== 'string') return src;
-    return src.replaceAll('&', '&amp;')
+function escapeHtml(html) {
+    if (typeof html !== 'string') return html;
+    return html.replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')

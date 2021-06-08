@@ -1,13 +1,13 @@
 # Vue Minimum Project
 
 ## Dependency
-- vue
-- vue-router
-- vuex
+- vue@next
+- vue-router@next
+- vuex@next
 
 ## DevDependency
 - @vue/cli-service
-- vue-template-compiler
+- @vue/compiler-sfc
 
 ## Project Content
 ```
@@ -32,7 +32,7 @@
 ### package.json
 ```json
 {
-  "name": "min-vue",
+  "name": "min-vue3",
   "version": "1.0.0",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@vue/cli-service": "",
-    "vue-template-compiler": ""
+    "@vue/compiler-sfc": ""
   }
 }
 ```
@@ -116,20 +116,15 @@ module.exports = {
 
 ### src/router/index.js
 ```javascript
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import VueConfig from '../../vue.config.js';
 
-
 const routes = [
-  
+
 ];
 
-Vue.use(VueRouter);
-
-const router = new VueRouter({
-    mode: 'history',
-    base: VueConfig.publicPath,
+const router = createRouter({
+    history: createWebHistory(VueConfig.publicPath),
     routes,
 });
 
@@ -138,12 +133,9 @@ export default router;
 
 ### src/store/index.js
 ```javascript
-import Vue from 'vue';
-import Vuex from 'vuex';
+import {createStore} from 'vuex';
 
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
+const store = createStore({
     namespaced: true,
 });
 
@@ -171,16 +163,12 @@ export default {
 
 ### src/main.js
 ```javascript
-import Vue from 'vue';
+import {createApp} from 'vue';
 import App from './App.vue';
 import store from './store/index.js';
 import router from './router/index.js';
 
-Vue.config.productionTip = false;
-
-new Vue({
-    store,
-    router,
-    render: createElement => createElement(App)
-}).$mount('#app');
+const vue = createApp(App).use(store).use(router);
+vue.config.productionTip = false;
+vue.mount('#app');
 ```

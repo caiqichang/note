@@ -33,7 +33,7 @@
 - attention: `browserslist` is required, value cloud be `[]`
 ```json
 {
-  "name": "",
+  "name": "min-react",
   "version": "1.0.0",
   "scripts": {
     "start": "react-scripts start",

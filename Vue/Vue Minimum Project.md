@@ -178,7 +178,7 @@ import router from './router/index.js';
 
 Vue.config.productionTip = false;
 
-new Vue({
+const app = new Vue({
     store,
     router,
     render: createElement => createElement(App)

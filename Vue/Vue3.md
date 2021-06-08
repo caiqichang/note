@@ -168,7 +168,7 @@ import App from './App.vue';
 import store from './store/index.js';
 import router from './router/index.js';
 
-const vue = createApp(App).use(store).use(router);
-vue.config.productionTip = false;
-vue.mount('#app');
+const app = createApp(App).use(store).use(router);
+app.config.productionTip = false;
+app.mount('#app');
 ```

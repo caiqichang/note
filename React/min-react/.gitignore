@@ -1,0 +1,13 @@
+# node
+node_modules
+package-lock.json
+
+# vscode
+.vscode
+
+# jetbrains
+.idea
+*.iml
+
+# project
+/build

@@ -1,0 +1,17 @@
+{
+  "name": "min-vue",
+  "version": "1.0.0",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build:prod": "vue-cli-service build --mode prod"
+  },
+  "dependencies": {
+    "vue": "",
+    "vue-router": "",
+    "vuex": ""
+  },
+  "devDependencies": {
+    "@vue/cli-service": "",
+    "vue-template-compiler": ""
+  }
+}

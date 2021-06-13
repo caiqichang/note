@@ -1,0 +1,18 @@
+{
+  "name": "min-react",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build:prod": "env-cmd -f .env.prod react-scripts build"
+  },
+  "browserslist": [],
+  "dependencies": {
+    "env-cmd": "",
+    "http-proxy-middleware": "",
+    "react": "",
+    "react-dom": "",
+    "react-router-dom": "",
+    "react-scripts": "",
+    "recoil": ""
+  }
+}

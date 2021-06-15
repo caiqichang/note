@@ -2,7 +2,13 @@
 
 ## Looping
 ```js
-let loop = (function recursion(root, listProp, iterator) {
+/**
+ * For tree looping.
+ * @param root tree object
+ * @param listProp property name of subtree
+ * @param iterator callback with item
+ */
+const loop = (function recursion(root, listProp, iterator) {
     if (root[listProp] && root[listProp].length > 0) {
         root[listProp].forEach(i => recursion(i, listProp, iterator));
     }
@@ -18,7 +24,16 @@ menuList.forEach(i => {
 
 ## Transform List to Tree
 ```js
-let listToTree = (raw, listProp, id, pid, sort) => {
+/**
+ * Transform list to tree structure.
+ * @param raw list object
+ * @param listProp property name of subtree
+ * @param id property name of id
+ * @param pid property name of parent id
+ * @param sort function of sorting, set null or false if unsort
+ * @returns tree structure of data
+ */
+const listToTree = (raw, listProp, id, pid, sort) => {
     let tree = [];
     raw.forEach(item => {
         let isParent = true;

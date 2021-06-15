@@ -5,7 +5,7 @@
  * Stop application if user open the browser devtool.
  * @param timeout milliseconds per check (default 500)
  */
-export default (timeout) => {
+const preventDevtool = function (timeout) {
     let div = document.createElement('div');
     // define getter of div.id
     Object.defineProperty(div, 'id', {
@@ -21,5 +21,5 @@ export default (timeout) => {
         console.log(div.id);
         console.clear();
     }, timeout || 500);
-}
+};
 ```

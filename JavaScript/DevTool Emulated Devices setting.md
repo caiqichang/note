@@ -2,10 +2,16 @@
 
 - Get Data
 ```javascript
-window.alert(JSON.stringify({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    devicePixelRadio: window.devicePixelRatio,
-    userAgent: window.navigator.userAgent,
-}));
+/**
+ * Get device's properties for emulation.
+ * @returns properties of device
+ */
+const getEmulatedDeviceProperties = function () {
+    return {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        devicePixelRadio: window.devicePixelRatio,
+        userAgent: window.navigator.userAgent,
+    };
+};
 ```

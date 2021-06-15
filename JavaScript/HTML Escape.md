@@ -4,12 +4,17 @@
 - Must escape `&` first, because other escape will generate `&`.
 
 ```javascript
-function escapeHtml(html) {
-    if (typeof html !== 'string') return html;
-    return html.replaceAll('&', '&amp;')
+/**
+ * Escape HTML to prevent XSS.
+ * @param content content that append to HTML
+ * @returns Safe HTML
+ */
+const escape = function (content) {
+    if (typeof content !== 'string') return content;
+    return content.replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll('\'', '&#39;');
-}
+};
 ```

@@ -2,7 +2,7 @@
 
 ```http
 GET
-https://translate.googleapis.com/translate_a/single?client=gtx&dj=1&dt=at&sl=auto&tl=zh-CN&q=
+https://translate.googleapis.com/translate_a/single?client=gtx&dj=1&dt=at&ie=utf8&oe=utf8&sl=auto&tl=zh-CN&q=
 ```
 
 - Parameter:

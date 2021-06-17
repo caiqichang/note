@@ -87,7 +87,7 @@ cipher.doFinal(content);
 
 ## 3. Util of AES and RSA Crypt
 ```java
-public class CryptUtil {
+public class CryptoUtils {
 
     private static final String RSA = "RSA";
     private static final String AES = "AES";

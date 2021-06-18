@@ -93,14 +93,18 @@ public class CryptoUtils {
     private static final String AES = "AES";
     private static final String AES_MODE_PADDING = "AES/ECB/PKCS5Padding";
 
+    public static String encodeKeyToBase64(Key key) {
+        return Base64.getEncoder().encodeToString(key.getEncoded());
+    }
+
     /**
      * generate random aes key
      */
-    public static String generateAesKey() {
+    public static Key generateAesKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
             keyGenerator.init(128, new SecureRandom());
-            return Base64.getEncoder().encodeToString(keyGenerator.generateKey().getEncoded());
+            return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -110,22 +114,25 @@ public class CryptoUtils {
     /**
      * generate stable aes key base on salt
      */
-    public static String generateAesKey(String password, String salt) {
+    public static Key generateAesKey(String password, String salt) {
         try {
-            return Base64.getEncoder().encodeToString(
-                    SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(
-                            new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 1000, 128)
-                    ).getEncoded());
+            return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(
+                    new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 1000, 128)
+            );
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String encryptByAes(String source, String aesKey) {
+    public static Key getAesKeyFromBase64(String base64) {
+        return new SecretKeySpec(Base64.getDecoder().decode(base64), AES);
+    }
+
+    public static String encryptByAes(String source, Key key) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(aesKey), AES));
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             return Base64.getEncoder().encodeToString(cipher.doFinal(source.getBytes()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
@@ -133,10 +140,10 @@ public class CryptoUtils {
         }
     }
 
-    public static String decryptByAes(String base64, String aesKey) {
+    public static String decryptByAes(String base64, Key key) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.getDecoder().decode(aesKey), AES));
+            cipher.init(Cipher.DECRYPT_MODE, key);
             return new String(cipher.doFinal(Base64.getDecoder().decode(base64)));
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
@@ -155,11 +162,11 @@ public class CryptoUtils {
         }
     }
 
-    public static String encryptByRsaPublishKey(byte[] source, PublicKey publicKey) {
+    public static String encryptByRsaPublishKey(String source, PublicKey publicKey) {
         try {
             Cipher cipher = Cipher.getInstance(RSA);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(source));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(source.getBytes()));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
             e.printStackTrace();
             return null;
@@ -177,43 +184,22 @@ public class CryptoUtils {
         }
     }
 
-    public static String encodeKeyToBase64(Key key) {
-        return Base64.getEncoder().encodeToString(key.getEncoded());
+    public static String getPemPublicKey(Key key) {
+        return getPemFormat(key, "RSA PUBLIC KEY");
     }
 
-    public static void writeKeyFile(Key key, String filePath, String title) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists() || !file.isFile()) file.createNewFile();
-        String keyString = Base64.getEncoder().encodeToString(key.getEncoded());
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write("-----BEGIN " + title + "-----\n");
-            if (keyString != null) {
-                int index = 0;
-                while (index < keyString.length()) {
-                    if (index + 64 > keyString.length()) {
-                        writer.write(keyString.substring(index) + "\n");
-                    } else {
-                        writer.write(keyString.substring(index, index + 64) + "\n");
-                    }
-                    index += 64;
-                }
-            }
-            writer.write("-----END " + title + "-----\n");
-        }
+    public static String getPemPrivateKey(Key key) {
+        return getPemFormat(key, "RSA PRIVATE KEY");
     }
 
-    // pattern of key file start and end
-    private static final Pattern pattern = Pattern.compile("^-----(BEGIN|END)\\s(.*)-----$");
+    public static String getPemFormat(Key key, String name) {
+        return "-----BEGIN " + name + "-----\r\n"
+                + Base64.getMimeEncoder().encodeToString(key.getEncoded()) + "\r\n"
+                + "-----END " + name + "-----\r\n";
+    }
 
-    public static String readKeyFromFile(String filePath) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            StringBuilder builder = new StringBuilder();
-            String buffer;
-            while ((buffer = reader.readLine()) != null) {
-                if (!pattern.matcher(buffer).find()) builder.append(buffer);
-            }
-            return builder.toString();
-        }
+    public static String readKeyFromPem(String pem) {
+        return pem.replaceAll("-----(BEGIN|END)(.*)-----", "").replaceAll("\\r\\n", "");
     }
 
     public static PublicKey decodeRsaPublicKeyFromBase64(String base64) {

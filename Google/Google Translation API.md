@@ -5,6 +5,10 @@ GET
 https://translate.googleapis.com/translate_a/single?client=gtx&dj=1&dt=at&ie=utf8&oe=utf8&sl=auto&tl=zh-CN&q=
 ```
 
+- Attention:
+  - `query` only for one sentence and limit in about 200 words.
+  - Need to replace all `\r\n` and `\n` to space. 
+  - Need to escape `query`, like `encodeURIComponent` in JavaScript and `URLEncoder.encode` in Java.
 - Parameter:
   - client
     - gtx

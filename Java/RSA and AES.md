@@ -88,23 +88,24 @@ cipher.doFinal(content);
 ## 3. Util of AES and RSA Crypt
 ```java
 public class CryptoUtils {
-
     private static final String RSA = "RSA";
     private static final String AES = "AES";
     private static final String AES_MODE_PADDING = "AES/ECB/PKCS5Padding";
 
-    public static String encodeKeyToBase64(Key key) {
+    private static String encodeKeyToBase64(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
     /**
-     * generate random aes key
+     * Generate random AES key, size is 128.
+     *
+     * @return Base64 AES key
      */
-    public static Key generateAesKey() {
+    public static String generateRandomAesKey() {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(AES);
             keyGenerator.init(128, new SecureRandom());
-            return keyGenerator.generateKey();
+            return encodeKeyToBase64(keyGenerator.generateKey());
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
@@ -112,45 +113,68 @@ public class CryptoUtils {
     }
 
     /**
-     * generate stable aes key base on salt
+     * Generate AES key by keyword and salt, size is 128.
+     *
+     * @param keyword keyword
+     * @param salt    salt
+     * @return Base64 AES key
      */
-    public static Key generateAesKey(String password, String salt) {
+    public static String generateAesKey(String keyword, String salt) {
         try {
-            return SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(
-                    new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 1000, 128)
-            );
+            return encodeKeyToBase64(SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1").generateSecret(
+                    new PBEKeySpec(keyword.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), 1000, 128)
+            ));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Key getAesKeyFromBase64(String base64) {
+    private static Key getAesKeyFromBase64(String base64) {
         return new SecretKeySpec(Base64.getDecoder().decode(base64), AES);
     }
 
-    public static String encryptByAes(String source, Key key) {
+    /**
+     * Encrypt content by AES.
+     *
+     * @param content      content to encrypt
+     * @param aesKeyBase64 Base64 AES key
+     * @return Base64 result
+     */
+    public static String encryptByAes(String content, String aesKeyBase64) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(source.getBytes()));
+            cipher.init(Cipher.ENCRYPT_MODE, getAesKeyFromBase64(aesKeyBase64));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(content.getBytes()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String decryptByAes(String base64, Key key) {
+    /**
+     * Decrypt content by AES
+     *
+     * @param content      Base64 content
+     * @param aesKeyBase64 Base64 AES key
+     * @return result
+     */
+    public static String decryptByAes(String content, String aesKeyBase64) {
         try {
             Cipher cipher = Cipher.getInstance(AES_MODE_PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            return new String(cipher.doFinal(Base64.getDecoder().decode(base64)));
+            cipher.init(Cipher.DECRYPT_MODE, getAesKeyFromBase64(aesKeyBase64));
+            return new String(cipher.doFinal(Base64.getDecoder().decode(content)));
         } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    /**
+     * Generate RSA key pair, size is 1024.
+     *
+     * @return key pair
+     */
     public static KeyPair generateRsaKeyPair() {
         try {
             KeyPairGenerator rsa = KeyPairGenerator.getInstance(RSA);
@@ -162,59 +186,85 @@ public class CryptoUtils {
         }
     }
 
-    public static String encryptByRsaPublishKey(String source, PublicKey publicKey) {
-        try {
-            Cipher cipher = Cipher.getInstance(RSA);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            return Base64.getEncoder().encodeToString(cipher.doFinal(source.getBytes()));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static byte[] decryptByRsaPrivateKey(String base64, PrivateKey privateKey) {
-        try {
-            Cipher cipher = Cipher.getInstance(RSA);
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            return cipher.doFinal(Base64.getDecoder().decode(base64));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String getPemPublicKey(Key key) {
-        return getPemFormat(key, "RSA PUBLIC KEY");
-    }
-
-    public static String getPemPrivateKey(Key key) {
-        return getPemFormat(key, "RSA PRIVATE KEY");
-    }
-
-    public static String getPemFormat(Key key, String name) {
+    private static String getPemFormat(Key key, String name) {
         return "-----BEGIN " + name + "-----\r\n"
                 + Base64.getMimeEncoder().encodeToString(key.getEncoded()) + "\r\n"
                 + "-----END " + name + "-----\r\n";
     }
 
-    public static String readKeyFromPem(String pem) {
-        return pem.replaceAll("-----(BEGIN|END)(.*)-----", "").replaceAll("\\r\\n", "");
+    /**
+     * Get RSA public key PEM.
+     *
+     * @param publicKey RSA public key
+     * @return PEM format of RSA public key
+     */
+    public static String getRsaPublicKeyPem(PublicKey publicKey) {
+        return getPemFormat(publicKey, "RSA PUBLIC KEY");
     }
 
-    public static PublicKey decodeRsaPublicKeyFromBase64(String base64) {
+    /**
+     * Get RSA private key PEM.
+     *
+     * @param privateKey RSA private key
+     * @return PEM format of RSA private key
+     */
+    public static String getRsaPrivateKeyPem(PrivateKey privateKey) {
+        return getPemFormat(privateKey, "RSA PRIVATE KEY");
+    }
+
+    private static String readKeyFromPem(String pem) {
+        return pem.replaceAll("-----(BEGIN|END)(.*)-----", "").replaceAll("\\r\\n", "").replaceAll("\\n", "");
+    }
+
+    private static PublicKey readRsaPublicKeyFromPem(String pem) {
         try {
-            return KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(base64)));
+            return KeyFactory.getInstance(RSA).generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(readKeyFromPem(pem))));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static PrivateKey decodeRsaPrivateKeyFromBase64(String base64) {
+    private static PrivateKey readRsaPrivateKeyFromBase64(String pem) {
         try {
-            return KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(base64)));
+            return KeyFactory.getInstance(RSA).generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(readKeyFromPem(pem))));
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Encrypt content by RSA public key pem. (X509)
+     *
+     * @param content      content to encrypt
+     * @param publicKeyPem RSA public key pem (X509)
+     * @return Base64 result
+     */
+    public static String encryptByRsaPublishKey(String content, String publicKeyPem) {
+        try {
+            Cipher cipher = Cipher.getInstance(RSA);
+            cipher.init(Cipher.ENCRYPT_MODE, readRsaPublicKeyFromPem(publicKeyPem));
+            return Base64.getEncoder().encodeToString(cipher.doFinal(content.getBytes()));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Decrypt content by RSA private key pem. (PKCS8)
+     *
+     * @param content       Base64 content to decrypt
+     * @param privateKeyPem RSA private key pem (PKCS8)
+     * @return result
+     */
+    public static String decryptByRsaPrivateKey(String content, String privateKeyPem) {
+        try {
+            Cipher cipher = Cipher.getInstance(RSA);
+            cipher.init(Cipher.DECRYPT_MODE, readRsaPrivateKeyFromBase64(privateKeyPem));
+            return new String(cipher.doFinal(Base64.getDecoder().decode(content)), StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException e) {
             e.printStackTrace();
             return null;
         }

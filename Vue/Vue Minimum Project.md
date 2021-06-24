@@ -122,7 +122,7 @@ import VueConfig from '../../vue.config.js';
 
 
 const routes = [
-  
+    
 ];
 
 Vue.use(VueRouter);
@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style scoped>
-
+  
 </style>
 ```
 

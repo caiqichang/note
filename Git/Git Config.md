@@ -4,16 +4,16 @@
 - Location: %USERNAME%/.gitconfig
 ```ini
 [core]
-	autocrlf = false
+    autocrlf = false
 [gui]
-	encoding = utf-8
+    encoding = utf-8
 [user]
-	name = caiqichang
-	email = cai_qichang@qq.com
+    name = caiqichang
+    email = cai_qichang@qq.com
 [http]
-	# proxy = http://127.0.0.1:1080/
+    # proxy = http://127.0.0.1:1080/
 [https]
-	# proxy = http://127.0.0.1:1080/
+    # proxy = http://127.0.0.1:1080/
 ```
 - set
 ```

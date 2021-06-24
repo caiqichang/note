@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import VueConfig from '../../vue.config.js';
 
 const routes = [
-
+    
 ];
 
 Vue.use(VueRouter);

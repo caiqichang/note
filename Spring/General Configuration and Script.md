@@ -62,8 +62,8 @@ jre/bin/java -Dfile.encoding=UTF-8 -jar $jarFile --spring.profiles.active=prod >
 ```bat
 set pidFile="log\\spring.pid"
 if exist pidFile {
-	set /p pid=<%pidFile%
-	taskkill /f /pid %pid%
+    set /p pid=<%pidFile%
+    taskkill /f /pid %pid%
 }
 ```
 
@@ -77,12 +77,12 @@ pidFile="log/spring.pid"
 # Seconds for waiting to force kill. 
 delayForceKill="10s"
 if [ -f $pidFile ];then 
-	kill -15 $(cat $pidFile)
-	date +"%Y-%m-%d %H:%M:%S"
-	echo "waiting for $delayForceKill ..."
-	sleep $delayForceKill
-	if [ -f $pidFile ];then
-		kill -9 $(cat $pidFile)
-	fi
+    kill -15 $(cat $pidFile)
+    date +"%Y-%m-%d %H:%M:%S"
+    echo "waiting for $delayForceKill ..."
+    sleep $delayForceKill
+    if [ -f $pidFile ];then
+        kill -9 $(cat $pidFile)
+    fi
 fi
 ```

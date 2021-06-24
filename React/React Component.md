@@ -25,11 +25,15 @@ function ${NAME}(props) {
     }, []);
 
     return (
-        <div></div>
+        <div>
+            
+        </div>
     );
 }
 
-${NAME}.defaultProps = {};
+${NAME}.defaultProps = {
+    
+};
 
 export default ${NAME};
 ```
@@ -60,12 +64,16 @@ class ${NAME} extends React.Component {
 
     render() {
         return (
-            <div></div>
+            <div>
+
+            </div>
         );
     }
 }
 
-${NAME}.defaultProps = {};
+${NAME}.defaultProps = {
+
+};
 
 export default ${NAME};
 ```

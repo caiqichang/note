@@ -1,4 +1,4 @@
-# Mybatis XML Config
+# MyBatis XML Config
 
 ## Spring Boot Config
 - Base on `Java` .
@@ -9,15 +9,15 @@ mybatis:
 ```
 
 - Base on `XML` .
-1. Without other item of Mybatis config, 
+1. Without other item of MyBatis config, 
 it means that only one of `XML Config` or `Java Config` could exist. 
 2. This file is relative to `src/main/resources`.
 ```yaml
 mybatis:
-  config-location: classpath:mybatis/config/MybatisConfig.xml
+  config-location: classpath:mybatis/MybatisConfiguration.xml
 ```
 
-## MybatisConfig.xml
+## MybatisConfiguration.xml
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">

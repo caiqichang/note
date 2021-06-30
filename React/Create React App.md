@@ -11,7 +11,10 @@ module.exports = app => {
         target: 'http://ip1:port1'
     }));
     app.use('/api2', createProxyMiddleware({
-        target: 'http://ip2:port2'
+        target: 'http://ip2:port2',
+        pathRewrite: {
+            '/api2': '/'
+        },
     }));
     // ...
 }

@@ -19,6 +19,7 @@ public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
                     .path("/api2/**")
                     .filters(GatewayFilterSpec::preserveHostHeader)
                     .uri("http://localhost:8082/"))
+                    .rewritePath("/api2/?(?<segment>.*)", "/${segment}"))
 
             .build();
 }
@@ -45,5 +46,6 @@ spring:
             - Path=/api2/**
           filters:
             - PreserveHostHeader
+            - RewritePath=/api2/?(?<segment>.*), /$\{segment}
           uri: http://localhost:8082/
 ```

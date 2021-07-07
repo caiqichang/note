@@ -1,14 +1,14 @@
 # MyBatis XML Config
 
 ## Spring Boot Config
-- Base on `Java` .
+- Base on `Java`.
 ```yaml
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 ```
 
-- Base on `XML` .
+- Base on `XML`.
 1. Without other item of MyBatis config, 
 it means that only one of `XML Config` or `Java Config` could exist. 
 2. This file is relative to `src/main/resources`.

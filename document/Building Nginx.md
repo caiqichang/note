@@ -1,4 +1,6 @@
-# Building Nginx for Windows
+# Building Nginx
+
+## For Windows Edition
 
 Official documentation：
 [Building nginx on the Win32 platform with Visual C](https://nginx.org/en/docs/howto_build_on_win32.html)

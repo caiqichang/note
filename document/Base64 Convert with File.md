@@ -1,0 +1,80 @@
+# Base64 Convert with File
+
+In Browser:
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Base64 and File Converter</title>
+</head>
+
+<body>
+    <div>
+        <div>
+            <input id="file_input" type="file" style="width: 400px;" />
+            <button onclick="file_to_base64()">File to Base64</button>
+        </div>
+        <hr />
+        <div>
+            <textarea id="base64_text" rows="10" style="width: 400px;"></textarea>
+            <button onclick="base64_to_file()">Base64 to File</button>
+        </div>
+    </div>
+    <script>
+        "use strict"
+
+        const file_input = document.querySelector("#file_input")
+        const base64_text = document.querySelector("#base64_text")
+
+        const reader = new FileReader()
+
+        // Limited by textarea, the file size must smaller than 50MB.
+        // To unlimit it, print the base64 text to console instead of textarea 
+        // by setting this variable to true.
+        let to_console = false
+
+        const file_to_base64 = () => {
+            if (file_input.files && file_input.files.length > 0) {
+                base64_text.value = "Pendding..."
+                reader.readAsDataURL(file_input.files[0])
+                reader.onload = () => {
+                    if (reader.result) {
+                        let array = reader.result.split("base64,")
+                        if (array.length > 1) {
+                            if (to_console) {
+                                console.log(array[1])
+                                base64_text.value = "Finished."
+                            } else {
+                                base64_text.value = array[1]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Using parameter base64 to convert larger base64 text.
+        const base64_to_file = (base64) => {
+            if (!base64) base64 = base64_text.value
+            if (base64) {
+                let binary = atob(base64)
+                let i = binary.length;
+                let buffer = new Uint8Array(i)
+                while (i--) {
+                    buffer[i] = binary.charCodeAt(i)
+                }
+
+                let a = document.createElement("a")
+                a.href = URL.createObjectURL(new Blob([buffer], { type: "multipart/example" }))
+                a.download = new Date().toJSON()
+                a.click()
+            }
+        }
+    </script>
+</body>
+
+</html>
+```
+

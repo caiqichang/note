@@ -1,0 +1,44 @@
+name: build nginx for windows
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    
+      - name: setup git
+        uses: actions/checkout@v4.1.1
+        
+      - name: setup microsoft visual c
+        uses: shogo82148/actions-setup-perl@v1.27.0
+        with:
+          arch: x64
+          
+      - name: setup perl
+        uses: msys2/setup-msys2@v2
+
+      - name: setup nasm
+        uses: ilammy/setup-nasm@v1.5.1
+      
+      - name: clone source code
+        run: |
+          c:
+          git clone --depth=1 https://github.com/openssl/openssl
+
+      - name: make
+        run: |
+          c:
+          cd openssl
+          nmake
+          
+      - name: package
+        run: |
+          c:
+          tar -c -f openssl.tar openssl
+      
+      - name: upload
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: openssl.tar
+          path: c:/openssl.tar

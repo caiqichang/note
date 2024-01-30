@@ -1,4 +1,4 @@
-name: build nginx for windows
+name: build openssl for windows
 
 on: workflow_dispatch
 

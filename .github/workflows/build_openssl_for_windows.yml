@@ -30,6 +30,8 @@ jobs:
         run: |
           c:
           cd openssl
+          vcvarsall.bat amd64
+          perl Configure VC-WIN64A
           nmake
           
       - name: package

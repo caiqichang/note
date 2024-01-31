@@ -1,5 +1,8 @@
 name: build nginx for windows
 
+# Officical Documentation:
+# https://nginx.org/en/docs/howto_build_on_win32.html
+
 on: workflow_dispatch
 
 jobs:

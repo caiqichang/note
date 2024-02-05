@@ -1,5 +1,5 @@
 If ($args) {
     sudo.bat powershell -NoExit -Command "(cd "$pwd");("$args")"
-}Else {
+} Else {
     sudo.bat powershell -NoExit -Command "cd "$pwd
 }

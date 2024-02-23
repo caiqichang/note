@@ -15,7 +15,7 @@ Maven Dependency:
 ```
 
 Initialize and Startup:
-```kt
+```kotlin
 val ftpServerFactory = FtpServerFactory()
 val userManager = PropertiesUserManagerFactory().createUserManager()
 
@@ -48,7 +48,7 @@ ftpServer?.start()
 ```
 
 Shutdown:
-```kt
+```kotlin
 fun stop() = ftpServer?.run { if (!isStopped) stop() }
 
 @PreDestroy
@@ -60,7 +60,7 @@ fun clear() = stop()
 > Accoding to the server, URL's path or filename may need decoding, usually from `GBK` or `UTF_8` to `ISO_8859_1`.
 
 Add authentication information to URL:
-```kt
+```kotlin
 /**
     * Add authentication information to URL, keep the original if exist.
     * @param url address
@@ -83,7 +83,7 @@ fun wrapUrl(url: String, username: String?, password: String?): String {
 ```
 
 ### Using Apache FtpClient
-```kt
+```kotlin
 /**
  * Generate Apache FTP Client.
  * @param url target URL, FTP format, e.g. ftp://a:b@c:d/e/f.g
@@ -170,7 +170,7 @@ Attention:
 - Filename or path return by `FtpRemoteFileTemplate.list(path)` maybe need decoding.
 
 Code: 
-```kt
+```kotlin
 /**
  * Generate FTP template.
  * @param url target URL, FTP format, e.g. ftp://a:b@c:d/e/f.g
